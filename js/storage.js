@@ -152,29 +152,35 @@ const Storage = (() => {
                 save(KEYS.SESSION, sessionUser);
                 return sessionUser;
             }
-            // Allow dynamic auto-creation for production signup
-            if (email && password) {
-                // Ensure email isn't the admin email trying to register
-                if (email === 'abhishekvp9746@gmail.com') {
-                    alert("Invalid admin login credentials.");
-                    return null;
-                }
-                const name = email.split('@')[0];
-                const newUser = {
-                    id: generateId('usr'),
-                    name: name.charAt(0).toUpperCase() + name.slice(1),
-                    email: email,
-                    password: password,
-                    status: 'Active',
-                    avatar: window.Config ? window.Config.PLACEHOLDERS.USER_AVATAR : 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80'
-                };
-                users.push(newUser);
-                save(KEYS.USERS, users);
-                const sessionUser = { id: newUser.id, name: newUser.name, email: newUser.email, avatar: newUser.avatar, isAdmin: false };
-                save(KEYS.SESSION, sessionUser);
-                return sessionUser;
-            }
             return null;
+        },
+
+        signup(name, email, password) {
+            const users = load(KEYS.USERS);
+            if (users.some(u => u.email === email)) {
+                return null;
+            }
+            const newUser = {
+                id: generateId('usr'),
+                name: name,
+                email: email,
+                password: password,
+                status: 'Active',
+                avatar: window.Config ? window.Config.PLACEHOLDERS.USER_AVATAR : "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23cbd5e1'><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/></svg>"
+            };
+            users.push(newUser);
+            save(KEYS.USERS, users);
+
+            const sessionUser = { 
+                id: newUser.id, 
+                name: newUser.name, 
+                email: newUser.email, 
+                avatar: newUser.avatar, 
+                isAdmin: false 
+            };
+            save(KEYS.SESSION, sessionUser);
+            this.addAuditLog('User Registered', `New account created for ${name} (${email})`);
+            return sessionUser;
         },
 
         logout() {

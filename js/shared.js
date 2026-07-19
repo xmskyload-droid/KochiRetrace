@@ -75,9 +75,8 @@ function renderHeader(rootPrefix, pagesPrefix) {
     let navHtml = `
     <nav class="flex justify-between items-center w-full px-6 md:px-10 max-w-[1280px] mx-auto h-full">
         <!-- Logo -->
-        <a class="text-2xl font-extrabold text-primary dark:text-primary-fixed tracking-tight flex items-center gap-2" href="${rootPrefix}index.html">
-            <span class="material-symbols-outlined text-primary dark:text-primary-fixed text-3xl" style="font-variation-settings: 'FILL' 1;">circle</span>
-            KochiRetrace
+        <a class="flex items-center" href="${rootPrefix}index.html">
+            <img src="${rootPrefix}assets/images/logo.png" class="h-14 w-auto object-contain bg-white rounded-lg p-1 shadow-sm border border-slate-100" alt="KochiRetrace Logo">
         </a>
 
         <!-- Middle Nav Links -->
@@ -223,9 +222,8 @@ function renderFooter(rootPrefix, pagesPrefix) {
     footerEl.innerHTML = `
     <div class="w-full px-6 md:px-10 max-w-[1280px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-12">
         <div class="space-y-6">
-            <div class="text-2xl font-bold text-white flex items-center gap-2">
-                <span class="material-symbols-outlined text-primary-fixed text-3xl" style="font-variation-settings: 'FILL' 1;">circle</span>
-                KochiRetrace
+            <div class="flex items-center">
+                <img src="${rootPrefix}assets/images/logo.png" class="h-16 w-auto object-contain bg-white rounded-xl p-1.5 shadow-sm" alt="KochiRetrace Logo">
             </div>
             <p class="text-sm max-w-sm">
                 Empowering the people of Ernakulam to find what they've lost and return what they've found. Community trust in action.

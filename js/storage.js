@@ -71,10 +71,10 @@ const Storage = (() => {
             save(KEYS.SETTINGS, {
                 siteName: 'KochiRetrace',
                 contactEmail: 'support@kochiretrace.in',
-                logoUrl: '',
+                logoUrl: 'assets/images/logo.png',
                 uploadLimit: '5MB',
                 autoArchiveDays: 30,
-                requireVerification: true // Items require admin approval before going public
+                requireVerification: true
             });
         }
     }

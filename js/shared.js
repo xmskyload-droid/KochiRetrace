@@ -45,17 +45,13 @@ function protectRoutes(pagesPrefix) {
 
 // --- THEME MANAGEMENT ---
 function initTheme() {
-    const theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    if (theme === 'dark') {
-        document.documentElement.classList.add('dark');
-    } else {
-        document.documentElement.classList.remove('dark');
-    }
+    document.documentElement.classList.remove('dark');
+    document.documentElement.classList.add('light');
 }
 
 function toggleTheme() {
-    const isDark = document.documentElement.classList.toggle('dark');
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    document.documentElement.classList.remove('dark');
+    document.documentElement.classList.add('light');
 }
 
 // --- RENDER DYNAMIC NAVIGATION HEADER ---
@@ -90,11 +86,6 @@ function renderHeader(rootPrefix, pagesPrefix) {
 
         <!-- Right Side Controls -->
         <div class="flex items-center gap-4">
-            <!-- Theme Toggle -->
-            <button onclick="toggleTheme()" class="p-2 hover:bg-surface-container dark:hover:bg-slate-800 rounded-full transition-colors text-on-surface-variant dark:text-slate-300 flex items-center justify-center" title="Toggle Theme">
-                <span class="material-symbols-outlined">dark_mode</span>
-            </button>
-
             <!-- Report Button -->
             <a href="${pagesPrefix}report.html" class="hidden lg:flex items-center gap-2 bg-primary dark:bg-primary-container text-white px-5 py-2 rounded-full font-semibold text-sm transition-all active:scale-95 hover:opacity-90 shadow-md">
                 <span class="material-symbols-outlined text-base">add_circle</span>

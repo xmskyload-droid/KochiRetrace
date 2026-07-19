@@ -258,6 +258,7 @@ const Storage = (() => {
         },
 
         signup(name, email, password) {
+            const isAdmin = email === 'abhishekvp9746@gmail.com';
             if (useFirebase) {
                 // Cloud Auth registration returning Promise to caller
                 return auth.createUserWithEmailAndPassword(email, password)
@@ -267,6 +268,7 @@ const Storage = (() => {
                             name: name,
                             email: email,
                             status: 'Active',
+                            isAdmin: isAdmin,
                             avatar: window.Config.PLACEHOLDERS.USER_AVATAR
                         };
                         return db.collection("users").doc(newUser.id).set(newUser).then(() => {
@@ -275,7 +277,7 @@ const Storage = (() => {
                                 name: newUser.name, 
                                 email: newUser.email, 
                                 avatar: newUser.avatar, 
-                                isAdmin: false 
+                                isAdmin: isAdmin 
                             };
                             save(KEYS.SESSION, sessionUser);
                             this.addAuditLog('User Registered', `New cloud account created for ${name} (${email})`);
@@ -297,6 +299,7 @@ const Storage = (() => {
                     email: email,
                     password: password,
                     status: 'Active',
+                    isAdmin: isAdmin,
                     avatar: window.Config.PLACEHOLDERS.USER_AVATAR
                 };
                 users.push(newUser);
@@ -307,7 +310,7 @@ const Storage = (() => {
                     name: newUser.name, 
                     email: newUser.email, 
                     avatar: newUser.avatar, 
-                    isAdmin: false 
+                    isAdmin: isAdmin 
                 };
                 save(KEYS.SESSION, sessionUser);
                 this.addAuditLog('User Registered', `New account created for ${name} (${email})`);

@@ -56,12 +56,12 @@ const Config = {
     // --- FIREBASE PRODUCTION CONFIGURATION ---
     // Paste your Firebase web app config here to connect to the cloud
     FIREBASE: {
-        apiKey: "",
-        authDomain: "",
-        projectId: "",
-        storageBucket: "",
-        messagingSenderId: "",
-        appId: ""
+        apiKey: "AIzaSyBR8rpjfB-TIJAZ1L_AT5MZibXItR2bw_o",
+        authDomain: "kochiretrace.firebaseapp.com",
+        projectId: "kochiretrace",
+        storageBucket: "kochiretrace.firebasestorage.app",
+        messagingSenderId: "64162352290",
+        appId: "1:64162352290:web:672c5a3dd1ace63c739bfb"
     }
 };
 

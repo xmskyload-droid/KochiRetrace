@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Lost & Found | KochiRetrace</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Atkinson+Hyperlegible+Next:wght@400;500;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        try {
+            tailwind.config = {
+                darkMode: "class",
+                theme: {
+                    extend: {
+                        "colors": {
+                            "surface-container": "#e5eeff",
+                            "outline-variant": "#c2c6d3",
+                            "inverse-surface": "#213145",
+                            "surface-variant": "#d3e4fe",
+                            "background": "#f8f9ff",
+                            "secondary-container": "#a0f399",
+                            "primary-container": "#0055a4",
+                            "primary-fixed": "#d5e3ff",
+                            "error": "#ba1a1a",
+                            "inverse-on-surface": "#eaf1ff",
+                            "surface": "#f8f9ff",
+                            "secondary": "#1b6d24",
+                            "on-primary-container": "#afccff",
+                            "tertiary-fixed-dim": "#ffb95f",
+                            "outline": "#727783",
+                            "on-secondary": "#ffffff",
+                            "primary-fixed-dim": "#a8c8ff",
+                            "surface-dim": "#cbdbf5",
+                            "on-surface": "#0b1c30",
+                            "on-tertiary": "#ffffff",
+                            "on-error-container": "#93000a",
+                            "on-primary": "#ffffff",
+                            "secondary-fixed": "#a3f69c",
+                            "on-tertiary-container": "#ffbe6d",
+                            "inverse-primary": "#a8c8ff",
+                            "on-tertiary-fixed-variant": "#653e00",
+                            "secondary-fixed-dim": "#88d982",
+                            "on-secondary-container": "#217128",
+                            "on-surface-variant": "#424751",
+                            "surface-bright": "#f8f9ff",
+                            "primary": "#003e7a",
+                            "tertiary-container": "#794b00",
+                            "on-secondary-fixed": "#002204",
+                            "on-secondary-fixed-variant": "#005312",
+                            "on-tertiary-fixed": "#2a1700",
+                            "on-primary-fixed-variant": "#004689",
+                            "surface-container-low": "#eff4ff",
+                            "surface-tint": "#175ead",
+                            "on-error": "#ffffff",
+                            "tertiary-fixed": "#ffddb8",
+                            "tertiary": "#593600",
+                            "error-container": "#ffdad6",
+                            "surface-container-highest": "#d3e4fe",
+                            "on-background": "#0b1c30",
+                            "surface-container-high": "#dce9ff",
+                            "on-primary-fixed": "#001b3c",
+                            "surface-container-lowest": "#ffffff"
+                        },
+                        "borderRadius": {
+                            "DEFAULT": "0.25rem",
+                            "lg": "0.5rem",
+                            "xl": "0.75rem",
+                            "full": "9999px"
+                        },
+                        "spacing": {
+                            "margin-mobile": "16px",
+                            "container-max": "1280px",
+                            "gutter": "24px",
+                            "base": "8px",
+                            "margin-desktop": "40px"
+                        },
+                        "fontFamily": {
+                            "headline-lg": ["Plus Jakarta Sans"],
+                            "body-md": ["Atkinson Hyperlegible Next"],
+                            "headline-lg-mobile": ["Plus Jakarta Sans"],
+                            "label-sm": ["Atkinson Hyperlegible Next"],
+                            "label-md": ["Atkinson Hyperlegible Next"],
+                            "headline-md": ["Plus Jakarta Sans"],
+                            "display-lg": ["Plus Jakarta Sans"],
+                            "body-lg": ["Atkinson Hyperlegible Next"]
+                        },
+                        "fontSize": {
+                            "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                            "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                            "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                            "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                            "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                            "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                            "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                            "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+                        }
+                    },
+                },
+            }
+        } catch (_e) {}
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md overflow-x-hidden">
+
+<!-- Dynamic Navigation Header -->
+<header id="global-header"></header>
+
+<main class="max-w-[1280px] mx-auto px-6 md:px-10 py-12">
+    <div class="flex flex-col lg:flex-row gap-8">
+        <!-- Sidebar Filters -->
+        <aside class="w-full lg:w-72 flex-shrink-0">
+            <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 sticky top-24 space-y-6">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-bold text-slate-950 dark:text-white">Filters</h2>
+                    <button id="clear-filters" class="text-sm text-primary dark:text-primary-fixed hover:underline font-semibold">Clear All</button>
+                </div>
+                
+                <hr class="border-slate-200 dark:border-slate-800">
+
+                <!-- Category Filter -->
+                <div class="space-y-3">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Category</h3>
+                    <div class="flex flex-col gap-2">
+                        <label class="flex items-center gap-3 p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-colors">
+                            <input class="rounded border-slate-300 text-primary focus:ring-primary category-checkbox" type="checkbox" value="Electronics">
+                            <span class="text-sm text-slate-700 dark:text-slate-300">Electronics</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-colors">
+                            <input class="rounded border-slate-300 text-primary focus:ring-primary category-checkbox" type="checkbox" value="Personal Items">
+                            <span class="text-sm text-slate-700 dark:text-slate-300">Personal Items</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-colors">
+                            <input class="rounded border-slate-300 text-primary focus:ring-primary category-checkbox" type="checkbox" value="Documents">
+                            <span class="text-sm text-slate-700 dark:text-slate-300">Documents</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-colors">
+                            <input class="rounded border-slate-300 text-primary focus:ring-primary category-checkbox" type="checkbox" value="Keys">
+                            <span class="text-sm text-slate-700 dark:text-slate-300">Keys</span>
+                        </label>
+                    </div>
+                </div>
+
+                <hr class="border-slate-200 dark:border-slate-800">
+
+                <!-- Status Toggle -->
+                <div class="space-y-3">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Status</h3>
+                    <div class="flex p-1 bg-slate-100 dark:bg-slate-800 rounded-full border border-slate-200 dark:border-slate-700">
+                        <button class="flex-1 py-1.5 px-3 rounded-full text-xs font-bold transition-all status-btn bg-white dark:bg-slate-700 shadow-sm text-primary dark:text-white">All</button>
+                        <button class="flex-1 py-1.5 px-3 rounded-full text-xs font-bold transition-all status-btn text-slate-500 dark:text-slate-400">Lost</button>
+                        <button class="flex-1 py-1.5 px-3 rounded-full text-xs font-bold transition-all status-btn text-slate-500 dark:text-slate-400">Found</button>
+                    </div>
+                </div>
+
+                <hr class="border-slate-200 dark:border-slate-800">
+
+                <!-- Area Selection -->
+                <div class="space-y-3">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Area</h3>
+                    <div class="relative">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 text-lg">location_on</span>
+                        <select id="location-select" class="w-full pl-9 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent appearance-none text-sm text-slate-800 dark:text-slate-200 outline-none">
+                            <option>All Ernakulam</option>
+                            <option>Marine Drive</option>
+                            <option>Edappally</option>
+                            <option>Fort Kochi</option>
+                            <option>Vyttila Hub</option>
+                            <option>Kakkanad</option>
+                            <option>Lulu Mall</option>
+                            <option>MG Road</option>
+                            <option>Panampilly Nagar</option>
+                            <option>Ernakulam Junction</option>
+                        </select>
+                    </div>
+                </div>
+
+                <hr class="border-slate-200 dark:border-slate-800">
+
+                <!-- Date Picker -->
+                <div class="space-y-3">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Date From</h3>
+                    <input id="date-filter" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent text-sm text-slate-800 dark:text-slate-200 outline-none" type="date">
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="flex-1 space-y-6">
+            <!-- Search & Control Header -->
+            <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-6">
+                <!-- Search Box -->
+                <div class="relative group">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 group-focus-within:text-primary transition-colors">search</span>
+                    <input id="search-input" class="w-full pl-12 pr-6 py-4 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-primary focus:border-transparent text-slate-800 dark:text-white outline-none placeholder:text-slate-400" placeholder="Search for items like 'keys', 'umbrella', 'wallet'..." type="text">
+                </div>
+                
+                <!-- Stats & Layout Toggles -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <p id="results-count" class="text-sm text-slate-500 dark:text-slate-400">Showing <span class="font-bold text-slate-850 dark:text-white">0</span> results across Kochi</p>
+                    
+                    <div class="flex items-center gap-4">
+                        <!-- Sort select -->
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-slate-400 font-bold uppercase">Sort</span>
+                            <select id="sort-select" class="py-1.5 pl-3 pr-8 bg-slate-100 dark:bg-slate-800 border-none rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 outline-none">
+                                <option value="newest">Newest</option>
+                                <option value="oldest">Oldest</option>
+                                <option value="alphabetical">Alphabetical</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Layout controls -->
+                        <div class="flex p-0.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl">
+                            <button id="view-grid-btn" class="p-1.5 rounded-lg bg-primary-fixed text-primary" title="Grid View">
+                                <span class="material-symbols-outlined text-lg block">grid_view</span>
+                            </button>
+                            <button id="view-list-btn" class="p-1.5 rounded-lg text-slate-500" title="List View">
+                                <span class="material-symbols-outlined text-lg block">view_list</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Items Feed Grid -->
+            <div id="items-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Cards render dynamically -->
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Details Modal -->
+<div id="details-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md close-modal-btn"></div>
+    <div class="relative bg-white dark:bg-slate-900 rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-slate-200 dark:border-slate-800 z-10 animate-fade-in flex flex-col">
+        <div class="p-6 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center">
+            <div>
+                <h2 id="modal-item-name" class="text-xl font-extrabold text-slate-950 dark:text-white truncate">Item Name</h2>
+                <span id="modal-item-category" class="text-xs text-slate-400 font-bold uppercase mt-1 block">Category</span>
+            </div>
+            <button class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full close-modal-btn text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <div class="p-6 space-y-6 flex-grow">
+            <!-- Image & Status container -->
+            <div class="relative rounded-2xl overflow-hidden h-72 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 group">
+                <img id="modal-item-image" class="w-full h-full object-cover transition-transform duration-300" src="" alt="Item Image">
+                <div class="absolute top-4 left-4">
+                    <span id="modal-item-status" class="px-3 py-1 rounded-full text-xs font-bold shadow-sm">LOST</span>
+                </div>
+                <button id="zoom-image-btn" class="absolute bottom-4 right-4 p-2.5 bg-white/90 dark:bg-slate-850/90 text-slate-800 dark:text-white rounded-xl shadow-lg border border-slate-200/50 backdrop-blur-sm active:scale-95 transition-all" title="Zoom image">
+                    <span class="material-symbols-outlined">zoom_in</span>
+                </button>
+            </div>
+            <!-- Info lists -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-4">
+                    <div>
+                        <span class="text-xs text-slate-400 font-bold uppercase">Description</span>
+                        <p id="modal-item-description" class="text-sm text-slate-700 dark:text-slate-300 mt-1 leading-relaxed">Description goes here</p>
+                    </div>
+                </div>
+                <div class="space-y-3 bg-slate-50 dark:bg-slate-850 p-5 rounded-2xl border border-slate-200/50 dark:border-slate-800 text-sm">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-primary">location_on</span>
+                        <div>
+                            <span class="text-xs text-slate-400 block font-bold">Locality</span>
+                            <span id="modal-item-locality" class="font-semibold text-slate-800 dark:text-slate-200">Kochi</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-primary">pin_drop</span>
+                        <div>
+                            <span class="text-xs text-slate-400 block font-bold">Landmark</span>
+                            <span id="modal-item-landmark" class="font-semibold text-slate-800 dark:text-slate-200">Kochi</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-primary">calendar_today</span>
+                        <div>
+                            <span class="text-xs text-slate-400 block font-bold">Date Lost/Found</span>
+                            <span id="modal-item-date" class="font-semibold text-slate-800 dark:text-slate-200">Kochi</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-primary">person</span>
+                        <div>
+                            <span class="text-xs text-slate-400 block font-bold">Reported By</span>
+                            <span id="modal-item-reporter" class="font-semibold text-slate-800 dark:text-slate-200">Name</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dynamic Contact Details Space -->
+            <div id="modal-contact-details" class="hidden"></div>
+        </div>
+        <div class="p-6 border-t border-slate-200 dark:border-slate-800 flex justify-end gap-3 bg-slate-50 dark:bg-slate-900 rounded-b-3xl">
+            <button class="px-5 py-2.5 border border-slate-350 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-xl font-semibold text-sm hover:bg-slate-100 dark:hover:bg-slate-800 close-modal-btn transition-colors">Close</button>
+            <button id="modal-claim-btn" class="px-6 py-2.5 bg-primary text-white rounded-xl font-semibold text-sm hover:opacity-90 transition-all flex items-center gap-2 active:scale-95 shadow-md">
+                Claim This Item
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Claim Form Modal -->
+<div id="claim-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md close-modal-btn"></div>
+    <div class="relative bg-white dark:bg-slate-900 rounded-3xl shadow-2xl max-w-md w-full border border-slate-200 dark:border-slate-800 z-10 animate-fade-in">
+        <div class="p-6 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center">
+            <h2 class="text-xl font-extrabold text-slate-950 dark:text-white">File Claim Request</h2>
+            <button class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full close-modal-btn text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <form id="claim-form">
+            <div class="p-6 space-y-6">
+                <div class="p-4 bg-primary-container/10 border border-primary/20 rounded-2xl text-xs text-primary dark:text-primary-fixed leading-relaxed">
+                    <p class="font-bold flex items-center gap-1.5"><span class="material-symbols-outlined text-base">info</span> Item Verification</p>
+                    <p class="mt-1">Provide clear proof or details so the reporter can verify your claim (e.g. key markings, serials, locked wallpaper, bag contents).</p>
+                </div>
+                
+                <h3 class="font-bold text-sm text-slate-800 dark:text-slate-200">Claiming: <span id="claim-item-name" class="text-primary">Item</span></h3>
+
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300" for="claim-reason">Why is this item yours? / Verification Details</label>
+                    <textarea id="claim-reason" class="w-full px-4 py-3 border border-slate-350 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-850 focus:border-primary focus:ring-1 focus:ring-primary outline-none text-sm transition-all" rows="4" placeholder="Mention contents, serial codes, passwords, purchase dates..." required></textarea>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300" for="claim-phone">Phone Number</label>
+                        <input id="claim-phone" class="w-full px-4 py-3 border border-slate-350 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-850 focus:border-primary focus:ring-1 focus:ring-primary outline-none text-sm transition-all" type="tel" placeholder="+91 00000 00000" required>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300" for="claim-email">Email Address</label>
+                        <input id="claim-email" class="w-full px-4 py-3 border border-slate-350 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-850 focus:border-primary focus:ring-1 focus:ring-primary outline-none text-sm transition-all" type="email" placeholder="name@example.com" required>
+                    </div>
+                </div>
+            </div>
+            <div class="p-6 border-t border-slate-200 dark:border-slate-800 flex justify-end gap-3 bg-slate-50 dark:bg-slate-900 rounded-b-3xl">
+                <button type="button" class="px-5 py-2.5 border border-slate-350 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-xl font-semibold text-sm hover:bg-slate-100 dark:hover:bg-slate-800 close-modal-btn transition-colors">Cancel</button>
+                <button type="submit" class="px-6 py-2.5 bg-secondary text-white rounded-xl font-semibold text-sm hover:opacity-90 active:scale-95 transition-all shadow-lg flex items-center gap-2">
+                    Submit Claim Request
+                    <span class="material-symbols-outlined text-base">send</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Dynamic Global Footer -->
+<footer id="global-footer"></footer>
+
+<!-- Scripts -->
+<script src="../js/config.js"></script>
+<script src="../js/storage.js"></script>
+<script src="../js/shared.js"></script>
+<script src="../js/browse.js"></script>
+
+</body>
+</html>

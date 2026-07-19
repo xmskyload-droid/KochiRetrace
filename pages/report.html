@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Item | KochiRetrace</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Atkinson+Hyperlegible+Next:wght@400;500;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        try {
+            tailwind.config = {
+                darkMode: "class",
+                theme: {
+                    extend: {
+                        "colors": {
+                            "surface-container": "#e5eeff",
+                            "outline-variant": "#c2c6d3",
+                            "inverse-surface": "#213145",
+                            "surface-variant": "#d3e4fe",
+                            "background": "#f8f9ff",
+                            "secondary-container": "#a0f399",
+                            "primary-container": "#0055a4",
+                            "primary-fixed": "#d5e3ff",
+                            "error": "#ba1a1a",
+                            "inverse-on-surface": "#eaf1ff",
+                            "surface": "#f8f9ff",
+                            "secondary": "#1b6d24",
+                            "on-primary-container": "#afccff",
+                            "tertiary-fixed-dim": "#ffb95f",
+                            "outline": "#727783",
+                            "on-secondary": "#ffffff",
+                            "primary-fixed-dim": "#a8c8ff",
+                            "surface-dim": "#cbdbf5",
+                            "on-surface": "#0b1c30",
+                            "on-tertiary": "#ffffff",
+                            "on-error-container": "#93000a",
+                            "on-primary": "#ffffff",
+                            "secondary-fixed": "#a3f69c",
+                            "on-tertiary-container": "#ffbe6d",
+                            "inverse-primary": "#a8c8ff",
+                            "on-tertiary-fixed-variant": "#653e00",
+                            "secondary-fixed-dim": "#88d982",
+                            "on-secondary-container": "#217128",
+                            "on-surface-variant": "#424751",
+                            "surface-bright": "#f8f9ff",
+                            "primary": "#003e7a",
+                            "tertiary-container": "#794b00",
+                            "on-secondary-fixed": "#002204",
+                            "on-secondary-fixed-variant": "#005312",
+                            "on-tertiary-fixed": "#2a1700",
+                            "on-primary-fixed-variant": "#004689",
+                            "surface-container-low": "#eff4ff",
+                            "surface-tint": "#175ead",
+                            "on-error": "#ffffff",
+                            "tertiary-fixed": "#ffddb8",
+                            "tertiary": "#593600",
+                            "error-container": "#ffdad6",
+                            "surface-container-highest": "#d3e4fe",
+                            "on-background": "#0b1c30",
+                            "surface-container-high": "#dce9ff",
+                            "on-primary-fixed": "#001b3c",
+                            "surface-container-lowest": "#ffffff"
+                        },
+                        "borderRadius": {
+                            "DEFAULT": "0.25rem",
+                            "lg": "0.5rem",
+                            "xl": "0.75rem",
+                            "full": "9999px"
+                        },
+                        "spacing": {
+                            "margin-mobile": "16px",
+                            "container-max": "1280px",
+                            "gutter": "24px",
+                            "base": "8px",
+                            "margin-desktop": "40px"
+                        },
+                        "fontFamily": {
+                            "headline-lg": ["Plus Jakarta Sans"],
+                            "body-md": ["Atkinson Hyperlegible Next"],
+                            "headline-lg-mobile": ["Plus Jakarta Sans"],
+                            "label-sm": ["Atkinson Hyperlegible Next"],
+                            "label-md": ["Atkinson Hyperlegible Next"],
+                            "headline-md": ["Plus Jakarta Sans"],
+                            "display-lg": ["Plus Jakarta Sans"],
+                            "body-lg": ["Atkinson Hyperlegible Next"]
+                        },
+                        "fontSize": {
+                            "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                            "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                            "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                            "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                            "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                            "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                            "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                            "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+                        }
+                    },
+                },
+            }
+        } catch (_e) {}
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md flex flex-col min-h-screen">
+
+<!-- Dynamic Navigation Header -->
+<header id="global-header"></header>
+
+<main class="flex-grow py-12 px-6 md:px-10 max-w-[1280px] mx-auto w-full">
+    <div class="max-w-3xl mx-auto">
+        <!-- Header Section -->
+        <div class="mb-10 text-center">
+            <h1 class="text-3xl font-extrabold text-primary dark:text-primary-fixed mb-2">Help Reconnect Lost Items</h1>
+            <p class="text-sm text-slate-500 dark:text-slate-400">Your report helps build a more reliable Kochi community. Follow the steps to list an item.</p>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="flex items-center justify-between mb-12 relative px-4">
+            <div class="absolute top-1/2 left-0 w-full h-0.5 bg-slate-200 dark:bg-slate-800 -translate-y-1/2 z-0"></div>
+            <div id="progress-bar" class="absolute top-1/2 left-0 w-0 h-0.5 bg-primary -translate-y-1/2 z-0 transition-all duration-500" style="width: 0%;"></div>
+            
+            <div class="relative z-10 flex flex-col items-center">
+                <div id="step-dot-1" class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold transition-all shadow-md">1</div>
+                <span class="mt-2 text-xs text-primary font-bold">Details</span>
+            </div>
+            <div class="relative z-10 flex flex-col items-center">
+                <div id="step-dot-2" class="w-10 h-10 rounded-full bg-slate-200 text-slate-500 dark:bg-slate-800 dark:text-slate-400 flex items-center justify-center font-bold transition-all">2</div>
+                <span class="mt-2 text-xs text-slate-550 dark:text-slate-400">Location</span>
+            </div>
+            <div class="relative z-10 flex flex-col items-center">
+                <div id="step-dot-3" class="w-10 h-10 rounded-full bg-slate-200 text-slate-500 dark:bg-slate-800 dark:text-slate-400 flex items-center justify-center font-bold transition-all">3</div>
+                <span class="mt-2 text-xs text-slate-550 dark:text-slate-400">Contact</span>
+            </div>
+        </div>
+
+        <!-- Form Container -->
+        <form id="reportForm" class="bg-white dark:bg-slate-900 p-8 md:p-10 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-[0px_4px_24px_rgba(0,85,164,0.04)]" onsubmit="return false;">
+            
+            <!-- Step 1: Item Details -->
+            <div id="step-1" class="space-y-6">
+                <!-- Status selection toggle (Lost vs Found) -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300">I want to report a:</label>
+                    <div class="flex gap-4">
+                        <label class="flex-1 flex items-center justify-center gap-2 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-750 cursor-pointer transition-colors">
+                            <input type="radio" name="report-type" value="Lost" checked class="text-primary focus:ring-primary">
+                            <span class="text-sm font-bold text-slate-700 dark:text-slate-350">Lost Item</span>
+                        </label>
+                        <label class="flex-1 flex items-center justify-center gap-2 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-750 cursor-pointer transition-colors">
+                            <input type="radio" name="report-type" value="Found" class="text-secondary focus:ring-secondary">
+                            <span class="text-sm font-bold text-slate-700 dark:text-slate-350">Found Item</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300" for="item-name">Item Name</label>
+                        <input id="item-name" class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-sm" placeholder="e.g. Blue Canvas Backpack" required type="text">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300" for="item-category">Category</label>
+                        <select id="item-category" class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-sm" required>
+                            <option value="">Select Category</option>
+                            <option>Electronics</option>
+                            <option>Documents/IDs</option>
+                            <option>Personal Items</option>
+                            <option>Keys</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300" for="item-date">Date Lost or Found</label>
+                    <input id="item-date" class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-sm" required type="date">
+                </div>
+
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300" for="item-desc">Description</label>
+                    <textarea id="item-desc" class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-sm" placeholder="Describe unique features, markings, brand names, colors, or contents to help identification..." required rows="4"></textarea>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300">Item Image</label>
+                    <div id="file-zone" class="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl p-8 text-center hover:border-primary dark:hover:border-primary-fixed transition-all cursor-pointer bg-slate-50 dark:bg-slate-800/50 flex flex-col items-center justify-center h-48">
+                        <input id="file-input" class="hidden" type="file" accept="image/*">
+                        
+                        <!-- Upload Prompt -->
+                        <div id="file-upload-prompt" class="space-y-2">
+                            <span class="material-symbols-outlined text-4xl text-slate-400">upload_file</span>
+                            <p class="text-sm font-semibold text-slate-700 dark:text-slate-300">Click to upload or drag and drop</p>
+                            <p class="text-[11px] text-slate-450">PNG, JPG up to 10MB</p>
+                        </div>
+                        
+                        <!-- Upload Preview (Hidden) -->
+                        <div id="file-preview" class="hidden relative w-full h-full">
+                            <img id="file-preview-img" class="w-full h-full object-contain rounded-lg" src="" alt="Uploaded item preview">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Location Details -->
+            <div id="step-2" class="hidden space-y-6 animate-fade-in">
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300" for="item-locality">Precise Area in Ernakulam</label>
+                    <select id="item-locality" class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-sm" required>
+                        <option value="">Select Locality</option>
+                        <option>Lulu Mall, Edappally</option>
+                        <option>Vyttila Hub</option>
+                        <option>Marine Drive</option>
+                        <option>Fort Kochi</option>
+                        <option>Kakkanad (Infopark)</option>
+                        <option>Kochi Metro Station</option>
+                        <option>MG Road</option>
+                        <option>Panampilly Nagar</option>
+                        <option>Ernakulam Junction (South Station)</option>
+                    </select>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300" for="item-landmark">Specific Landmark Details</label>
+                    <input id="item-landmark" class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-sm" placeholder="e.g. Near platform 2 benches, second floor food court table" type="text">
+                </div>
+                <div class="h-60 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 relative bg-slate-100 dark:bg-slate-950 flex items-center justify-center">
+                    <img class="w-full h-full object-cover opacity-60" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDgKbSqduNL3wA_GjhjsBhrauvMucravwbN6Y6Q4WtngI-cIco0rf5HBOq5VX_ERHlkkNfaXguxLHignvHnCV-2YZPQiRrEWp6TtSHlWquN4lD93QtLnJfcV3Rrj3MlhnVHTWaMXzavri3cYEMnig7Skq3THBA35GwAzTKGcdyTV37elIGatEHlqlFqi8fxH1U1L2aiipWwK5NaXYWypYphUs2jProKYQKhd45HWsjdV1jI4xrVqknDpP9Bp1VMje25AG6iz8QqSdY" alt="Kochi Map Simulation">
+                    <div class="absolute top-4 left-4 bg-white/90 dark:bg-slate-900/90 px-3.5 py-1.5 rounded-full flex items-center gap-2 shadow-md border border-slate-200 dark:border-slate-800">
+                        <span class="w-2.5 h-2.5 rounded-full bg-primary animate-ping"></span>
+                        <span class="text-xs font-bold text-slate-800 dark:text-white">Marker Coordinates Automatically Plotted</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Contact & Submit -->
+            <div id="step-3" class="hidden space-y-6 animate-fade-in">
+                <div class="p-4 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900 rounded-2xl flex gap-3 text-emerald-800 dark:text-emerald-350 text-xs">
+                    <span class="material-symbols-outlined text-lg">verified_user</span>
+                    <p class="leading-relaxed">Your phone and email details are kept confidential. They are only shared with verified claimants that you explicitly approve in your dashboard.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300" for="contact-phone">Phone Number</label>
+                        <input id="contact-phone" class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-sm font-medium" placeholder="+91 00000 00000" required type="tel">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300" for="contact-email">Email Address</label>
+                        <input id="contact-email" class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-sm font-medium" placeholder="name@example.com" required type="email">
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-3 mt-4">
+                    <input id="terms" class="mt-1 rounded border-slate-300 text-primary focus:ring-primary" required type="checkbox">
+                    <label class="text-xs text-slate-500 dark:text-slate-400 leading-normal" for="terms">
+                        I confirm that the information I have provided is authentic and correct. I authorize KochiRetrace to save this data for matching purposes.
+                    </label>
+                </div>
+            </div>
+
+            <!-- Controls footer -->
+            <div class="flex justify-between items-center mt-10 pt-6 border-t border-slate-200 dark:border-slate-800">
+                <button id="prevBtn" class="invisible px-6 py-3 rounded-xl font-bold text-sm text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all flex items-center gap-2" type="button">
+                    <span class="material-symbols-outlined text-sm">arrow_back</span>
+                    Back
+                </button>
+                <button id="nextBtn" class="px-8 py-3 rounded-xl font-bold text-sm bg-primary text-white shadow-lg hover:opacity-95 transition-all flex items-center gap-2 active:scale-95 animate-pulse-subtle" type="button">
+                    Next Step 
+                    <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</main>
+
+<!-- Success Message Overlay (Hidden initially) -->
+<div id="successMessage" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md"></div>
+    <div class="relative bg-white dark:bg-slate-900 p-10 md:p-12 rounded-3xl shadow-2xl max-w-md w-full text-center border border-slate-250 dark:border-slate-800 z-10 animate-fade-in">
+        <div class="w-16 h-16 bg-secondary-container text-on-secondary-container rounded-full flex items-center justify-center mx-auto mb-6">
+            <span class="material-symbols-outlined text-3xl text-secondary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+        </div>
+        <h2 class="text-2xl font-extrabold text-primary dark:text-primary-fixed mb-3">Report Submitted</h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mb-8 leading-relaxed">Thank you for helping the community. Your report has been listed and coordinates have been plotted on the interactive map.</p>
+        <button class="w-full bg-primary text-white py-3.5 rounded-xl font-bold hover:opacity-90 transition-all active:scale-95 shadow-md" onclick="window.location.href='dashboard.html'">
+            Go to Dashboard
+        </button>
+    </div>
+</div>
+
+<!-- Dynamic Global Footer -->
+<footer id="global-footer"></footer>
+
+<!-- Scripts -->
+<script src="../js/config.js"></script>
+<script src="../js/storage.js"></script>
+<script src="../js/shared.js"></script>
+<script src="../js/report.js"></script>
+
+</body>
+</html>

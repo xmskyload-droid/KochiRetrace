@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Moderation Portal | KochiRetrace</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Atkinson+Hyperlegible+Next:wght@400;500;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        try {
+            tailwind.config = {
+                darkMode: "class",
+                theme: {
+                    extend: {
+                        "colors": {
+                            "surface-container": "#e5eeff",
+                            "outline-variant": "#c2c6d3",
+                            "inverse-surface": "#213145",
+                            "surface-variant": "#d3e4fe",
+                            "background": "#f8f9ff",
+                            "secondary-container": "#a0f399",
+                            "primary-container": "#0055a4",
+                            "primary-fixed": "#d5e3ff",
+                            "error": "#ba1a1a",
+                            "inverse-on-surface": "#eaf1ff",
+                            "surface": "#f8f9ff",
+                            "secondary": "#1b6d24",
+                            "on-primary-container": "#afccff",
+                            "tertiary-fixed-dim": "#ffb95f",
+                            "outline": "#727783",
+                            "on-secondary": "#ffffff",
+                            "primary-fixed-dim": "#a8c8ff",
+                            "surface-dim": "#cbdbf5",
+                            "on-surface": "#0b1c30",
+                            "on-tertiary": "#ffffff",
+                            "on-error-container": "#93000a",
+                            "on-primary": "#ffffff",
+                            "secondary-fixed": "#a3f69c",
+                            "on-tertiary-container": "#ffbe6d",
+                            "inverse-primary": "#a8c8ff",
+                            "on-tertiary-fixed-variant": "#653e00",
+                            "secondary-fixed-dim": "#88d982",
+                            "on-secondary-container": "#217128",
+                            "on-surface-variant": "#424751",
+                            "surface-bright": "#f8f9ff",
+                            "primary": "#003e7a",
+                            "tertiary-container": "#794b00",
+                            "on-secondary-fixed": "#002204",
+                            "on-secondary-fixed-variant": "#005312",
+                            "on-tertiary-fixed": "#2a1700",
+                            "on-primary-fixed-variant": "#004689",
+                            "surface-container-low": "#eff4ff",
+                            "surface-tint": "#175ead",
+                            "on-error": "#ffffff",
+                            "tertiary-fixed": "#ffddb8",
+                            "tertiary": "#593600",
+                            "error-container": "#ffdad6",
+                            "surface-container-highest": "#d3e4fe",
+                            "on-background": "#0b1c30",
+                            "surface-container-high": "#dce9ff",
+                            "on-primary-fixed": "#001b3c",
+                            "surface-container-lowest": "#ffffff"
+                        },
+                        "borderRadius": {
+                            "DEFAULT": "0.25rem",
+                            "lg": "0.5rem",
+                            "xl": "0.75rem",
+                            "full": "9999px"
+                        },
+                        "spacing": {
+                            "margin-mobile": "16px",
+                            "container-max": "1280px",
+                            "gutter": "24px",
+                            "base": "8px",
+                            "margin-desktop": "40px"
+                        },
+                        "fontFamily": {
+                            "headline-lg": ["Plus Jakarta Sans"],
+                            "body-md": ["Atkinson Hyperlegible Next"],
+                            "headline-lg-mobile": ["Plus Jakarta Sans"],
+                            "label-sm": ["Atkinson Hyperlegible Next"],
+                            "label-md": ["Atkinson Hyperlegible Next"],
+                            "headline-md": ["Plus Jakarta Sans"],
+                            "display-lg": ["Plus Jakarta Sans"],
+                            "body-lg": ["Atkinson Hyperlegible Next"]
+                        },
+                        "fontSize": {
+                            "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                            "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                            "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                            "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                            "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                            "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                            "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                            "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+                        }
+                    },
+                },
+            }
+        } catch (_e) {}
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-on-surface font-body-md min-h-screen flex flex-col">
+
+<!-- Header Section -->
+<header id="global-header"></header>
+
+<!-- Main Workspace Layout -->
+<main class="flex-grow flex w-full max-w-[1280px] mx-auto px-6 md:px-10 py-8 gap-8">
+    
+    <!-- Sidebar Controls -->
+    <aside class="w-64 flex-shrink-0">
+        <div class="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-3xl p-4 sticky top-24 space-y-1.5 shadow-sm">
+            <div class="px-4 py-3 mb-2">
+                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Admin Control</span>
+                <span class="text-xs text-slate-700 dark:text-slate-200 font-extrabold mt-0.5 block truncate" id="admin-name-title">Administrator</span>
+            </div>
+            
+            <button data-tab="dashboard" class="admin-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-primary bg-primary-container/15 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
+                <span class="material-symbols-outlined text-lg">dashboard</span> Dashboard
+            </button>
+            <button data-tab="users" class="admin-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
+                <span class="material-symbols-outlined text-lg">group</span> Users
+            </button>
+            <button data-tab="items" class="admin-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
+                <span class="material-symbols-outlined text-lg">inventory_2</span> Items
+            </button>
+            <button data-tab="claims" class="admin-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
+                <span class="material-symbols-outlined text-lg">handshake</span> Claims
+            </button>
+            <button data-tab="verification" class="admin-tab-btn w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
+                <span class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-lg">verified_user</span> Verification Queue
+                </span>
+                <span id="queue-badge" class="bg-error text-white text-[9px] px-2 py-0.5 rounded-full font-bold hidden">0</span>
+            </button>
+            <button data-tab="stories" class="admin-tab-btn w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
+                <span class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-lg">volunteer_activism</span> Stories Wall
+                </span>
+                <span id="stories-queue-badge" class="bg-amber-500 text-white text-[9px] px-2 py-0.5 rounded-full font-bold hidden">0</span>
+            </button>
+            <button data-tab="map" class="admin-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
+                <span class="material-symbols-outlined text-lg">map</span> Map Management
+            </button>
+            <button data-tab="settings" class="admin-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
+                <span class="material-symbols-outlined text-lg">settings</span> Settings
+            </button>
+            <button data-tab="logs" class="admin-tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
+                <span class="material-symbols-outlined text-lg">description</span> Audit Logs
+            </button>
+            
+            <hr class="border-slate-200 dark:border-slate-800 my-2">
+            
+            <button id="admin-logout-btn" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-error hover:bg-error-container/20 transition-colors">
+                <span class="material-symbols-outlined text-lg">logout</span> Logout
+            </button>
+        </div>
+    </aside>
+
+    <!-- Content panels -->
+    <section class="flex-grow bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm min-h-[70vh]">
+        
+        <!-- PANEL 1: DASHBOARD -->
+        <div id="panel-dashboard" class="admin-panel space-y-6">
+            <h2 class="text-2xl font-bold text-slate-950 dark:text-white">Moderation Overview</h2>
+            
+            <!-- Cards grid -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="p-5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl">
+                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Registered Users</span>
+                    <span class="text-2xl font-extrabold mt-1 block text-primary" id="stat-total-users">0</span>
+                </div>
+                <div class="p-5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl">
+                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Active Lost Items</span>
+                    <span class="text-2xl font-extrabold mt-1 block text-error" id="stat-active-lost">0</span>
+                </div>
+                <div class="p-5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl">
+                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Active Found Items</span>
+                    <span class="text-2xl font-extrabold mt-1 block text-secondary" id="stat-active-found">0</span>
+                </div>
+                <div class="p-5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl">
+                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Returned Items</span>
+                    <span class="text-2xl font-extrabold mt-1 block text-emerald-500" id="stat-returned-items">0</span>
+                </div>
+            </div>
+
+            <!-- Stats subrow -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <div class="p-5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-center space-y-1">
+                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Recovery Success Rate</span>
+                    <span class="text-3xl font-black text-secondary" id="stat-recovery-rate">0%</span>
+                </div>
+                <div class="p-5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-center space-y-1">
+                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Active Claims</span>
+                    <span class="text-3xl font-black text-amber-500" id="stat-active-claims">0</span>
+                </div>
+                <div class="p-5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-center space-y-1">
+                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Pending Verifications</span>
+                    <span class="text-3xl font-black text-error" id="stat-pending-verify">0</span>
+                </div>
+            </div>
+
+            <!-- Recent Activity Ticker -->
+            <div class="border border-slate-250 dark:border-slate-800 rounded-2xl p-5 bg-white dark:bg-slate-900">
+                <h3 class="font-bold text-sm text-slate-950 dark:text-white mb-4">Latest System Actions</h3>
+                <div id="dash-activity-log" class="space-y-3 max-h-60 overflow-y-auto">
+                    <!-- Dynamic logs -->
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL 2: USERS -->
+        <div id="panel-users" class="admin-panel hidden space-y-6">
+            <div class="flex justify-between items-center gap-4 flex-wrap">
+                <h2 class="text-2xl font-bold text-slate-950 dark:text-white">User Accounts</h2>
+                <input id="user-search" class="bg-slate-50 dark:bg-slate-900 rounded-xl px-4 py-2 border border-slate-200 dark:border-slate-800 text-sm outline-none w-64" placeholder="Search by name, email..." type="text">
+            </div>
+
+            <div class="overflow-x-auto border border-slate-200 dark:border-slate-800 rounded-2xl">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 text-slate-500 font-bold">
+                            <th class="p-4">Name</th>
+                            <th class="p-4">Email</th>
+                            <th class="p-4">Role</th>
+                            <th class="p-4">Status</th>
+                            <th class="p-4 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-tbody">
+                        <!-- Loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- PANEL 3: ITEMS -->
+        <div id="panel-items" class="admin-panel hidden space-y-6">
+            <div class="flex justify-between items-center gap-4 flex-wrap">
+                <h2 class="text-2xl font-bold text-slate-950 dark:text-white">Item Inventory Moderation</h2>
+                <div class="flex gap-2">
+                    <input id="item-search" class="bg-slate-50 dark:bg-slate-900 rounded-xl px-4 py-2 border border-slate-200 dark:border-slate-800 text-sm outline-none w-48" placeholder="Search item..." type="text">
+                    <select id="item-status-filter" class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs outline-none">
+                        <option value="All">All Statuses</option>
+                        <option value="Lost">Lost</option>
+                        <option value="Found">Found</option>
+                        <option value="Verified">Verified</option>
+                        <option value="Returned">Returned</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto border border-slate-200 dark:border-slate-800 rounded-2xl">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 text-slate-500 font-bold">
+                            <th class="p-4">Item</th>
+                            <th class="p-4">Category</th>
+                            <th class="p-4">Locality</th>
+                            <th class="p-4">Reporter</th>
+                            <th class="p-4">Status</th>
+                            <th class="p-4 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="items-tbody">
+                        <!-- Loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- PANEL 4: CLAIMS -->
+        <div id="panel-claims" class="admin-panel hidden space-y-6">
+            <h2 class="text-2xl font-bold text-slate-950 dark:text-white">Claim Management</h2>
+            <div class="overflow-x-auto border border-slate-200 dark:border-slate-800 rounded-2xl">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 text-slate-500 font-bold">
+                            <th class="p-4">Item</th>
+                            <th class="p-4">Claimant</th>
+                            <th class="p-4">Details/Reason</th>
+                            <th class="p-4">Status</th>
+                            <th class="p-4 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="claims-tbody">
+                        <!-- Loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- PANEL 5: VERIFICATION QUEUE -->
+        <div id="panel-verification" class="admin-panel hidden space-y-6">
+            <h2 class="text-2xl font-bold text-slate-950 dark:text-white">Verification Queue</h2>
+            <p class="text-xs text-slate-550 dark:text-slate-400">Newly reported listings requiring moderation before appearing on the public page.</p>
+            
+            <div id="verification-list" class="space-y-4">
+                <!-- Dynamically loaded list -->
+            </div>
+        </div>
+
+        <!-- PANEL 6: STORIES -->
+        <div id="panel-stories" class="admin-panel hidden space-y-6">
+            <h2 class="text-2xl font-bold text-slate-950 dark:text-white">Community Success Stories Moderation</h2>
+            <div class="overflow-x-auto border border-slate-200 dark:border-slate-800 rounded-2xl">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 text-slate-500 font-bold">
+                            <th class="p-4">Title</th>
+                            <th class="p-4">Author</th>
+                            <th class="p-4">Content</th>
+                            <th class="p-4">Approved</th>
+                            <th class="p-4 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stories-tbody">
+                        <!-- Loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- PANEL 7: MAP MANAGEMENT -->
+        <div id="panel-map" class="admin-panel hidden space-y-6">
+            <div class="flex justify-between items-center gap-4 flex-wrap border-b pb-4 border-slate-100 dark:border-slate-800">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-950 dark:text-white">Map & Locality Settings</h2>
+                    <p class="text-xs text-slate-400 mt-1">Configure active localities and geographic center markers for Leaflet.js mapping.</p>
+                </div>
+                <button id="add-locality-btn" class="bg-primary text-white text-xs px-4 py-2.5 rounded-xl font-bold hover:opacity-95 shadow active:scale-95 transition-all">
+                    Add Locality
+                </button>
+            </div>
+
+            <!-- Localities Table -->
+            <div class="overflow-x-auto border border-slate-200 dark:border-slate-800 rounded-2xl">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 text-slate-500 font-bold">
+                            <th class="p-4">Locality Name</th>
+                            <th class="p-4">Latitude</th>
+                            <th class="p-4">Longitude</th>
+                            <th class="p-4 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="map-tbody">
+                        <!-- Loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- PANEL 8: SETTINGS -->
+        <div id="panel-settings" class="admin-panel hidden space-y-6">
+            <h2 class="text-2xl font-bold text-slate-950 dark:text-white border-b pb-3 border-slate-150 dark:border-slate-800">Global System Preferences</h2>
+            
+            <form id="admin-settings-form" class="space-y-6 max-w-xl text-sm">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="font-bold text-slate-700 dark:text-slate-300">Website Name</label>
+                        <input id="set-site-name" class="w-full bg-slate-50 dark:bg-slate-900 rounded-xl px-4 py-2.5 border border-slate-350 dark:border-slate-800 focus:ring-1 focus:ring-primary outline-none" type="text">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="font-bold text-slate-700 dark:text-slate-300">Contact Support Email</label>
+                        <input id="set-support-email" class="w-full bg-slate-50 dark:bg-slate-900 rounded-xl px-4 py-2.5 border border-slate-350 dark:border-slate-800 focus:ring-1 focus:ring-primary outline-none" type="email">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="font-bold text-slate-700 dark:text-slate-300">Max Upload Size Limit</label>
+                        <select id="set-upload-limit" class="w-full bg-slate-50 dark:bg-slate-900 rounded-xl px-4 py-2.5 border border-slate-350 dark:border-slate-800 focus:ring-1 focus:ring-primary outline-none">
+                            <option value="2MB">2MB</option>
+                            <option value="5MB">5MB</option>
+                            <option value="10MB">10MB</option>
+                        </select>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="font-bold text-slate-700 dark:text-slate-300">Auto-Archive After (Days)</label>
+                        <input id="set-archive-days" class="w-full bg-slate-50 dark:bg-slate-900 rounded-xl px-4 py-2.5 border border-slate-350 dark:border-slate-800 focus:ring-1 focus:ring-primary outline-none" type="number">
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3 p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800">
+                    <input id="set-require-verification" class="rounded text-primary focus:ring-primary border-slate-300 w-5 h-5" type="checkbox">
+                    <div>
+                        <label class="font-bold text-slate-800 dark:text-slate-200 block" for="set-require-verification">Require Admin Approval</label>
+                        <span class="text-xs text-slate-400">Newly reported items are placed in the verification queue before becoming public.</span>
+                    </div>
+                </div>
+
+                <button type="submit" class="bg-primary text-white font-bold text-xs px-6 py-3 rounded-xl hover:opacity-95 shadow active:scale-95 transition-all">
+                    Save Configuration
+                </button>
+            </form>
+        </div>
+
+        <!-- PANEL 9: AUDIT LOGS -->
+        <div id="panel-logs" class="admin-panel hidden space-y-6">
+            <h2 class="text-2xl font-bold text-slate-950 dark:text-white border-b pb-3 border-slate-150 dark:border-slate-800">Administrative Logs</h2>
+            <div class="overflow-x-auto border border-slate-200 dark:border-slate-800 rounded-2xl">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 text-slate-500 font-bold">
+                            <th class="p-4 w-40">Date/Time</th>
+                            <th class="p-4 w-48">Action Type</th>
+                            <th class="p-4">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logs-tbody">
+                        <!-- Loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </section>
+</main>
+
+<!-- Locality Modal Editor -->
+<div id="locality-modal" class="hidden fixed inset-0 z-[999] flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md close-modal-btn"></div>
+    <div class="relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-850 rounded-3xl p-6 shadow-2xl max-w-sm w-full z-10 space-y-6 animate-fade-in text-sm">
+        <div class="flex justify-between items-center border-b pb-3">
+            <h3 class="font-extrabold text-slate-950 dark:text-white" id="locality-modal-title">Add Locality</h3>
+            <button class="close-modal-btn text-slate-400 hover:text-slate-700 dark:hover:text-white">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <form id="locality-form" class="space-y-4">
+            <div class="space-y-1">
+                <label class="font-bold text-slate-700 dark:text-slate-350">Locality Name</label>
+                <input id="loc-name" class="w-full bg-slate-50 dark:bg-slate-900 border rounded-xl px-3 py-2 outline-none" required type="text">
+            </div>
+            <div class="space-y-1">
+                <label class="font-bold text-slate-700 dark:text-slate-350">Latitude</label>
+                <input id="loc-lat" class="w-full bg-slate-50 dark:bg-slate-900 border rounded-xl px-3 py-2 outline-none" step="any" required type="number">
+            </div>
+            <div class="space-y-1">
+                <label class="font-bold text-slate-700 dark:text-slate-350">Longitude</label>
+                <input id="loc-lng" class="w-full bg-slate-50 dark:bg-slate-900 border rounded-xl px-3 py-2 outline-none" step="any" required type="number">
+            </div>
+            <div class="flex justify-end gap-2 pt-2 border-t">
+                <button type="button" class="px-4 py-2 border rounded-xl close-modal-btn">Cancel</button>
+                <button type="submit" class="bg-primary text-white px-5 py-2 rounded-xl font-bold shadow-md hover:opacity-95 transition-all">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Dynamic Global Footer -->
+<footer id="global-footer"></footer>
+
+<!-- Scripts -->
+<script src="../js/config.js"></script>
+<script src="../js/storage.js"></script>
+<script src="../js/shared.js"></script>
+<script src="../js/admin.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>KochiRetrace | Ernakulam Lost & Found</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Atkinson+Hyperlegible+Next:wght@400;500;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        try {
+            tailwind.config = {
+                darkMode: "class",
+                theme: {
+                    extend: {
+                        "colors": {
+                            "on-primary-container": "#afccff",
+                            "on-error": "#ffffff",
+                            "secondary-fixed": "#a3f69c",
+                            "on-secondary-fixed": "#002204",
+                            "background": "#f8f9ff",
+                            "tertiary-fixed-dim": "#ffb95f",
+                            "surface-container-low": "#eff4ff",
+                            "primary": "#003e7a",
+                            "on-secondary-fixed-variant": "#005312",
+                            "on-surface-variant": "#424751",
+                            "surface-tint": "#175ead",
+                            "on-tertiary-fixed-variant": "#653e00",
+                            "error": "#ba1a1a",
+                            "tertiary-fixed": "#ffddb8",
+                            "inverse-surface": "#213145",
+                            "outline": "#727783",
+                            "inverse-primary": "#a8c8ff",
+                            "surface-container-highest": "#d3e4fe",
+                            "primary-container": "#0055a4",
+                            "surface-container-lowest": "#ffffff",
+                            "on-surface": "#0b1c30",
+                            "surface-dim": "#cbdbf5",
+                            "inverse-on-surface": "#eaf1ff",
+                            "tertiary": "#593600",
+                            "secondary": "#1b6d24",
+                            "surface-container": "#e5eeff",
+                            "primary-fixed": "#d5e3ff",
+                            "tertiary-container": "#794b00",
+                            "on-secondary-container": "#217128",
+                            "on-secondary": "#ffffff",
+                            "on-primary": "#ffffff",
+                            "on-primary-fixed-variant": "#004689",
+                            "surface-container-high": "#dce9ff",
+                            "secondary-container": "#a0f399",
+                            "surface-variant": "#d3e4fe",
+                            "secondary-fixed-dim": "#88d982",
+                            "on-tertiary-fixed": "#2a1700",
+                            "on-tertiary": "#ffffff",
+                            "primary-fixed-dim": "#a8c8ff",
+                            "outline-variant": "#c2c6d3",
+                            "on-tertiary-container": "#ffbe6d",
+                            "error-container": "#ffdad6",
+                            "on-primary-fixed": "#001b3c",
+                            "on-error-container": "#93000a",
+                            "surface-bright": "#f8f9ff",
+                            "on-background": "#0b1c30",
+                            "surface": "#f8f9ff"
+                        },
+                        "borderRadius": {
+                            "DEFAULT": "0.25rem",
+                            "lg": "0.5rem",
+                            "xl": "0.75rem",
+                            "full": "9999px"
+                        },
+                        "spacing": {
+                            "margin-desktop": "40px",
+                            "gutter": "24px",
+                            "margin-mobile": "16px",
+                            "base": "8px",
+                            "container-max": "1280px"
+                        },
+                        "fontFamily": {
+                            "label-md": ["Atkinson Hyperlegible Next"],
+                            "headline-lg": ["Plus Jakarta Sans"],
+                            "body-md": ["Atkinson Hyperlegible Next"],
+                            "body-lg": ["Atkinson Hyperlegible Next"],
+                            "label-sm": ["Atkinson Hyperlegible Next"],
+                            "display-lg": ["Plus Jakarta Sans"],
+                            "headline-lg-mobile": ["Plus Jakarta Sans"],
+                            "headline-md": ["Plus Jakarta Sans"]
+                        },
+                        "fontSize": {
+                            "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                            "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                            "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                            "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                            "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                            "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                            "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                            "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+                        }
+                    },
+                },
+            }
+        } catch (_e) {}
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md overflow-x-hidden">
+
+<!-- Dynamic Navigation Header -->
+<header id="global-header"></header>
+
+<main>
+    <!-- Immersive Hero Section -->
+    <section class="relative min-h-[80vh] flex items-center overflow-hidden bg-slate-50">
+        <!-- Background Image -->
+        <div class="absolute inset-0 z-0">
+            <img alt="Aerial view of Kochi in morning light" class="w-full h-full object-cover opacity-90" src="assets/images/kochi_light_hero.png"/>
+            <div class="absolute inset-0 bg-gradient-to-r from-white/95 via-white/70 to-transparent"></div>
+        </div>
+        
+        <div class="max-w-[1280px] mx-auto w-full px-6 md:px-10 relative z-10 py-24">
+            <div class="max-w-3xl space-y-10">
+                <div class="space-y-6">
+                    <div class="inline-flex items-center gap-2 bg-primary/10 backdrop-blur-sm text-primary px-4 py-1.5 rounded-full font-semibold text-sm w-fit border border-primary/20 shadow-sm">
+                        <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">verified</span>
+                        Trusted by 5,000+ Kochiites
+                    </div>
+                    <h1 class="font-display-lg text-4xl md:text-5xl lg:text-6xl text-slate-900 leading-tight">
+                        Bring it back home to <br/><span class="text-secondary text-green-700 font-extrabold">Ernakulam</span>.
+                    </h1>
+                    <p class="font-body-lg text-lg md:text-xl text-slate-600 max-w-xl">
+                        Lost something in the Metro, at Lulu Mall, or during your commute? KochiRetrace is your community-powered lost and found network.
+                    </p>
+                </div>
+                
+                <!-- Search Bar Component -->
+                <form id="hero-search-form" class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md p-2 rounded-2xl shadow-2xl flex flex-col md:flex-row gap-2 border border-slate-200 dark:border-slate-800 max-w-2xl">
+                    <div class="flex-1 flex items-center px-4 gap-3">
+                        <span class="material-symbols-outlined text-slate-400">search</span>
+                        <input id="hero-search-query" class="w-full bg-transparent border-none focus:ring-0 text-slate-800 dark:text-white py-3 outline-none" placeholder="What did you lose?" type="text"/>
+                    </div>
+                    <div class="w-px bg-slate-300 dark:bg-slate-700 h-8 self-center hidden md:block"></div>
+                    <div class="flex-1 flex items-center px-4 gap-3">
+                        <span class="material-symbols-outlined text-slate-400">location_on</span>
+                        <select id="hero-search-location" class="w-full bg-transparent border-none focus:ring-0 text-slate-800 dark:text-white py-3 outline-none appearance-none">
+                            <option value="">All Ernakulam</option>
+                            <option value="Marine Drive">Marine Drive</option>
+                            <option value="Edappally">Edappally</option>
+                            <option value="Fort Kochi">Fort Kochi</option>
+                            <option value="Vyttila Hub">Vyttila Hub</option>
+                            <option value="Kakkanad">Kakkanad</option>
+                            <option value="Lulu Mall">Lulu Mall</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="bg-primary text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-primary-container transition-all shadow-lg active:scale-95">
+                        Search
+                    </button>
+                </form>
+                
+                <div class="flex flex-wrap gap-4 pt-2">
+                    <a href="pages/report.html?type=lost" class="bg-error text-white px-8 py-4 rounded-xl font-semibold flex items-center gap-3 shadow-xl hover:bg-error/90 transition-all active:scale-95">
+                        <span class="material-symbols-outlined">fmd_bad</span>
+                        Report Lost Item
+                    </a>
+                    <a href="pages/report.html?type=found" class="bg-secondary text-white px-8 py-4 rounded-xl font-semibold flex items-center gap-3 shadow-xl hover:bg-secondary/90 transition-all active:scale-95">
+                        <span class="material-symbols-outlined">check_circle</span>
+                        Report Found Item
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Items Grid Section -->
+    <section class="py-24 px-6 md:px-10 max-w-[1280px] mx-auto">
+        <div class="flex flex-col sm:flex-row justify-between items-center mb-16 gap-6">
+            <div>
+                <h2 class="text-3xl font-extrabold text-slate-900 dark:text-white">Items in your area</h2>
+                <p class="text-slate-500 dark:text-slate-400 mt-2">Active reports sorted by recently updated</p>
+            </div>
+            <div class="flex p-1 bg-slate-100 dark:bg-slate-800 rounded-full w-fit border border-slate-200 dark:border-slate-700">
+                <button class="px-8 py-2 rounded-full bg-white dark:bg-slate-700 shadow-md text-primary dark:text-white font-semibold transition-all" id="toggle-lost">Lost</button>
+                <button class="px-8 py-2 rounded-full text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-semibold transition-all active:scale-95" id="toggle-found">Found</button>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="area-items-grid">
+            <!-- Dynamic Cards Load Here -->
+        </div>
+        
+        <div class="text-center mt-12">
+            <a href="pages/browse.html" class="inline-flex items-center gap-2 text-primary dark:text-primary-fixed font-bold hover:underline">
+                View all items <span class="material-symbols-outlined">arrow_forward</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- How it Works Section -->
+    <section class="bg-slate-50 dark:bg-slate-900 py-24 px-6 md:px-10 border-y border-slate-200 dark:border-slate-800">
+        <div class="max-w-[1280px] mx-auto">
+            <div class="text-center mb-20">
+                <h2 class="text-3xl font-extrabold text-slate-900 dark:text-white">Restoring Hope in 3 Steps</h2>
+                <p class="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto mt-4">Our streamlined process makes it easy for the community to help each other out.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
+                <div class="hidden md:block absolute top-10 left-[15%] right-[15%] h-0.5 border-t border-dashed border-slate-300 dark:border-slate-700 z-0"></div>
+                <div class="relative z-10 flex flex-col items-center text-center group">
+                    <div class="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center text-xl font-bold mb-6 shadow-xl group-hover:scale-110 transition-transform">1</div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Post a Report</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 max-w-xs">Provide details, photos, and the approximate location in Ernakulam where the item was lost or found.</p>
+                </div>
+                <div class="relative z-10 flex flex-col items-center text-center group">
+                    <div class="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center text-xl font-bold mb-6 shadow-xl group-hover:scale-110 transition-transform">2</div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Get Verified Matches</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 max-w-xs">Our system matches keywords and areas. You'll get notified as soon as a claimant verifies ownership details.</p>
+                </div>
+                <div class="relative z-10 flex flex-col items-center text-center group">
+                    <div class="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center text-xl font-bold mb-6 shadow-xl group-hover:scale-110 transition-transform">3</div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Safe Reconnection</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 max-w-xs">Coordinate securely via mock chat. We recommend meeting at public Kochi Metro stations for safety.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Commonly Missing Categories -->
+    <section class="py-24 px-6 md:px-10 max-w-[1280px] mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+            <div>
+                <h2 class="text-3xl font-extrabold text-slate-900 dark:text-white">Commonly Missing Categories</h2>
+                <p class="text-slate-500 dark:text-slate-400 mt-2">Filter and browse by specific types of items reported in Ernakulam.</p>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+            <a href="pages/browse.html?category=Electronics" class="group bg-white dark:bg-slate-800 p-8 rounded-[2rem] border border-slate-200 dark:border-slate-700 hover:border-primary dark:hover:border-primary-fixed hover:shadow-xl transition-all relative overflow-hidden">
+                <div class="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-6">
+                    <span class="material-symbols-outlined text-2xl">devices</span>
+                </div>
+                <h3 class="text-lg font-bold text-slate-950 dark:text-white mb-1">Electronics</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Phones, Laptops, Earbuds</p>
+            </a>
+            <a href="pages/browse.html?category=Personal%20Items" class="group bg-white dark:bg-slate-800 p-8 rounded-[2rem] border border-slate-200 dark:border-slate-700 hover:border-primary dark:hover:border-primary-fixed hover:shadow-xl transition-all relative overflow-hidden">
+                <div class="w-12 h-12 bg-secondary/10 text-secondary rounded-xl flex items-center justify-center mb-6">
+                    <span class="material-symbols-outlined text-2xl">work</span>
+                </div>
+                <h3 class="text-lg font-bold text-slate-950 dark:text-white mb-1">Personal Items</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Bags, Wallets, Accessories</p>
+            </a>
+            <a href="pages/browse.html?category=Documents/IDs" class="group bg-white dark:bg-slate-800 p-8 rounded-[2rem] border border-slate-200 dark:border-slate-700 hover:border-primary dark:hover:border-primary-fixed hover:shadow-xl transition-all relative overflow-hidden">
+                <div class="w-12 h-12 bg-amber-500/10 text-amber-500 rounded-xl flex items-center justify-center mb-6">
+                    <span class="material-symbols-outlined text-2xl">description</span>
+                </div>
+                <h3 class="text-lg font-bold text-slate-950 dark:text-white mb-1">Documents</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Aadhaar, licenses, key folders</p>
+            </a>
+            <a href="pages/browse.html?category=Keys" class="group bg-white dark:bg-slate-800 p-8 rounded-[2rem] border border-slate-200 dark:border-slate-700 hover:border-primary dark:hover:border-primary-fixed hover:shadow-xl transition-all relative overflow-hidden">
+                <div class="w-12 h-12 bg-teal-500/10 text-teal-500 rounded-xl flex items-center justify-center mb-6">
+                    <span class="material-symbols-outlined text-2xl">key</span>
+                </div>
+                <h3 class="text-lg font-bold text-slate-950 dark:text-white mb-1">Keys</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Car keys, house keychains</p>
+            </a>
+        </div>
+    </section>
+
+    <!-- Recently Reunited Stories -->
+    <section class="bg-slate-50 dark:bg-slate-900/50 py-24 px-6 md:px-10 border-y border-slate-200 dark:border-slate-800" id="recently-reunited-section">
+        <div class="max-w-[1280px] mx-auto">
+            <h2 class="text-3xl font-extrabold text-slate-900 dark:text-white text-center mb-16">Recently Reunited</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="index-reunited-grid">
+                <!-- Loaded dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="py-24 px-6 md:px-10 max-w-[1280px] mx-auto">
+        <div class="bg-primary rounded-[3rem] p-16 md:p-24 relative overflow-hidden text-center shadow-2xl">
+            <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 40px 40px;"></div>
+            <div class="relative z-10 max-w-2xl mx-auto space-y-8">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-white">Ready to help your neighbor?</h2>
+                <p class="text-slate-200">Every report helps strengthen our community trust. Whether you've lost an item or found something, listing it takes less than 2 minutes.</p>
+                <div class="flex flex-col sm:flex-row justify-center gap-4 pt-4">
+                    <a href="pages/report.html?type=lost" class="bg-white text-primary px-8 py-4 rounded-xl font-bold shadow-lg hover:bg-slate-100 transition-all active:scale-95">
+                        Report Lost Item
+                    </a>
+                    <a href="pages/report.html?type=found" class="bg-primary-container text-white border border-white/20 px-8 py-4 rounded-xl font-bold hover:bg-white/10 transition-all active:scale-95">
+                        Report Found Item
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- Dynamic Global Footer -->
+<footer id="global-footer"></footer>
+
+<!-- Scripts -->
+<script src="js/config.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/shared.js"></script>
+<script>
+    // Search form submission redirect
+    document.getElementById('hero-search-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const query = document.getElementById('hero-search-query').value.trim();
+        const location = document.getElementById('hero-search-location').value;
+        let url = 'pages/browse.html?';
+        if (query) url += `search=${encodeURIComponent(query)}&`;
+        if (location) url += `location=${encodeURIComponent(location)}`;
+        window.location.href = url;
+    });
+
+    // Toggle lost vs found listings
+    let activeFilter = 'Lost';
+    const grid = document.getElementById('area-items-grid');
+    const toggleLostBtn = document.getElementById('toggle-lost');
+    const toggleFoundBtn = document.getElementById('toggle-found');
+
+    toggleLostBtn.addEventListener('click', () => {
+        activeFilter = 'Lost';
+        toggleLostBtn.className = "px-8 py-2 rounded-full bg-white dark:bg-slate-700 shadow-md text-primary dark:text-white font-semibold transition-all";
+        toggleFoundBtn.className = "px-8 py-2 rounded-full text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-semibold transition-all active:scale-95";
+        renderItems();
+    });
+
+    toggleFoundBtn.addEventListener('click', () => {
+        activeFilter = 'Found';
+        toggleFoundBtn.className = "px-8 py-2 rounded-full bg-white dark:bg-slate-700 shadow-md text-primary dark:text-white font-semibold transition-all";
+        toggleLostBtn.className = "px-8 py-2 rounded-full text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-semibold transition-all active:scale-95";
+        renderItems();
+    });
+
+    function renderItems() {
+        if (!window.Storage) return;
+        const items = window.Storage.getItems().filter(item => item.status === activeFilter).slice(0, 4);
+        
+        if (items.length === 0) {
+            grid.innerHTML = `
+                <div class="col-span-full py-12 text-center text-slate-500 dark:text-slate-400">
+                    No active ${activeFilter.toLowerCase()} items reported in this area.
+                </div>
+            `;
+            return;
+        }
+
+        grid.innerHTML = items.map(item => `
+            <article class="group bg-white dark:bg-slate-800 rounded-[2rem] overflow-hidden border border-slate-200 dark:border-slate-700 hover:border-primary transition-all duration-500 hover:shadow-2xl flex flex-col">
+                <div class="relative h-48 overflow-hidden bg-slate-100 dark:bg-slate-900">
+                    <img alt="${item.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" src="${item.image || 'https://images.unsplash.com/photo-1595079676339-1534801ad6cf?auto=format&fit=crop&w=400&q=80'}"/>
+                    <div class="absolute top-4 left-4 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold tracking-wider flex items-center gap-1.5 shadow-sm border border-slate-100 dark:border-slate-800">
+                        <span class="w-1.5 h-1.5 rounded-full ${item.status === 'Lost' ? 'bg-error animate-pulse' : 'bg-secondary'}"></span> 
+                        ${item.status.toUpperCase()}
+                    </div>
+                </div>
+                <div class="p-6 flex-1 flex flex-col">
+                    <h3 class="font-bold text-lg text-slate-950 dark:text-white mb-2 line-clamp-1">${item.name}</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mb-6">
+                        <span class="material-symbols-outlined text-base text-primary">location_on</span> 
+                        ${item.locality}
+                    </p>
+                    <a href="pages/browse.html?itemId=${item.id}" class="mt-auto w-full py-2.5 border border-primary/20 text-primary dark:text-primary-fixed dark:border-slate-600 rounded-xl text-center text-sm font-semibold hover:bg-primary hover:text-white dark:hover:bg-slate-700 transition-all active:scale-95">
+                        View Details
+                    </a>
+                </div>
+            </article>
+        `).join('');
+    }
+
+    function renderReunited() {
+        if (!window.Storage) return;
+        const section = document.getElementById('recently-reunited-section');
+        const reunitedGrid = document.getElementById('index-reunited-grid');
+        if (!section || !reunitedGrid) return;
+        
+        const stories = window.Storage.getStories().filter(s => s.verifiedByAdmin !== false).slice(0, 3);
+        if (stories.length === 0) {
+            section.classList.add('hidden');
+            return;
+        }
+        
+        section.classList.remove('hidden');
+        reunitedGrid.innerHTML = stories.map(story => `
+            <div class="bg-white dark:bg-slate-800 rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-700 hover:shadow-xl transition-all p-6 flex flex-col justify-between">
+                <div>
+                    <div class="flex justify-between items-start gap-4 mb-4">
+                        <h3 class="text-base font-bold text-slate-900 dark:text-white truncate">${story.title}</h3>
+                        <span class="bg-secondary text-white text-[9px] font-bold px-2.5 py-0.5 rounded-full">REUNITED</span>
+                    </div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 italic border-l-4 border-slate-350 dark:border-slate-750 pl-4 mb-6 leading-relaxed">
+                        "${story.content}"
+                    </p>
+                </div>
+                <div class="flex justify-between items-center text-[10px] text-slate-400 border-t pt-3 mt-4">
+                    <span class="font-bold text-slate-700 dark:text-slate-300">- ${story.author}</span>
+                    <span>${story.date}</span>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Initial Load
+    setTimeout(() => {
+        renderItems();
+        renderReunited();
+    }, 100);
+</script>
+
+</body>
+</html>

@@ -168,8 +168,8 @@
 
             <!-- Sign up Toggle Link -->
             <div class="text-center">
-                <p class="text-sm text-slate-500 dark:text-slate-400" id="toggle-text">
-                    Don't have an account? 
+                <p class="text-sm text-slate-500 dark:text-slate-400">
+                    <span id="toggle-label-text">Don't have an account?</span> 
                     <button type="button" class="text-primary dark:text-primary-fixed font-bold hover:underline" id="toggle-auth-mode">Sign up</button>
                 </p>
             </div>
@@ -198,7 +198,7 @@
     const btnText = document.getElementById('btn-text');
     const btnIcon = document.getElementById('btn-icon');
     const toggleAuthMode = document.getElementById('toggle-auth-mode');
-    const toggleText = document.getElementById('toggle-text');
+    const toggleLabelText = document.getElementById('toggle-label-text');
     const forgotPasswordLink = document.getElementById('forgot-password-link');
 
     // Switch between Sign In and Sign Up modes
@@ -212,7 +212,8 @@
             nameInput.required = true;
             btnText.textContent = "Sign Up";
             btnIcon.textContent = "person_add";
-            toggleText.innerHTML = `Already have an account? <button type="button" class="text-primary dark:text-primary-fixed font-bold hover:underline" id="toggle-auth-mode">Login</button>`;
+            toggleLabelText.textContent = "Already have an account?";
+            toggleAuthMode.textContent = "Login";
             forgotPasswordLink.classList.add('hidden');
         } else {
             formTitle.textContent = "Welcome Back";
@@ -221,12 +222,10 @@
             nameInput.required = false;
             btnText.textContent = "Login";
             btnIcon.textContent = "login";
-            toggleText.innerHTML = `Don't have an account? <button type="button" class="text-primary dark:text-primary-fixed font-bold hover:underline" id="toggle-auth-mode">Sign up</button>`;
+            toggleLabelText.textContent = "Don't have an account?";
+            toggleAuthMode.textContent = "Sign up";
             forgotPasswordLink.classList.remove('hidden');
         }
-
-        // Re-attach toggle handler to the new element
-        document.getElementById('toggle-auth-mode').addEventListener('click', arguments.callee);
     });
 
     // Form Submission

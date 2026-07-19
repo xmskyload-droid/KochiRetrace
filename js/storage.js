@@ -1,4 +1,4 @@
-// storage.js - Storage Layer Abstraction for KochiRetrace (Updated with Admin Accounts, Audit Logs, and Verification Queue)
+// storage.js - Storage Layer Abstraction for KochiRetrace (Updated with Profile Upload & Old Avatar Purge)
 
 const Storage = (() => {
     // Local storage keys
@@ -30,10 +30,22 @@ const Storage = (() => {
         return `${prefix}_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
     }
 
-    // Initialize databases as empty arrays for production mode
+    // Purge old seed items
+    const firstItem = localStorage.getItem(KEYS.ITEMS);
+    if (firstItem && firstItem.includes('item_1')) {
+        localStorage.removeItem(KEYS.ITEMS);
+        localStorage.removeItem(KEYS.USERS);
+        localStorage.removeItem(KEYS.SESSION);
+        localStorage.removeItem(KEYS.CLAIMS);
+        localStorage.removeItem(KEYS.NOTIFICATIONS);
+        localStorage.removeItem(KEYS.MESSAGES);
+        localStorage.removeItem(KEYS.STORIES);
+    }
+
+    // Initialize databases
     function initDatabase() {
         if (!localStorage.getItem(KEYS.USERS)) {
-            // Seed the single default Admin user
+            // Seed default Admin user
             const defaultUsers = [
                 {
                     id: 'usr_admin',
@@ -42,7 +54,7 @@ const Storage = (() => {
                     password: 'Abhishekvp@2006',
                     isAdmin: true,
                     status: 'Active',
-                    avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80'
+                    avatar: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23cbd5e1'><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/></svg>"
                 }
             ];
             save(KEYS.USERS, defaultUsers);
@@ -77,6 +89,27 @@ const Storage = (() => {
                 requireVerification: true
             });
         }
+
+        // AUTO-PURGE: Locate existing accounts with the old unsplash face avatar and force-reset to SVG
+        const users = load(KEYS.USERS);
+        let updated = false;
+        const defaultAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23cbd5e1'><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/></svg>";
+        
+        users.forEach(u => {
+            if (u.avatar && u.avatar.includes('unsplash') && (u.avatar.includes('photo-1535713875002') || u.avatar.includes('150'))) {
+                u.avatar = defaultAvatar;
+                updated = true;
+            }
+        });
+        if (updated) {
+            save(KEYS.USERS, users);
+            // Also reset session user
+            const sess = load(KEYS.SESSION, null);
+            if (sess && sess.avatar && sess.avatar.includes('unsplash')) {
+                sess.avatar = defaultAvatar;
+                save(KEYS.SESSION, sess);
+            }
+        }
     }
 
     initDatabase();
@@ -86,22 +119,17 @@ const Storage = (() => {
         getItems(includeUnverified = false) {
             const items = load(KEYS.ITEMS);
             if (includeUnverified) return items;
-            // Public views only see items approved by admin
             return items.filter(i => i.verifiedByAdmin !== false);
         },
 
         saveItem(item) {
             const config = window.Config || { getCoordinates: () => ({ lat: 9.9816, lng: 76.2995 }) };
             const settings = this.getSettings();
-            
-            const items = load(KEYS.ITEMS); // load directly to include unverified
+            const items = load(KEYS.ITEMS);
             item.id = item.id || generateId('item');
             item.createdAt = Date.now();
             item.coords = config.getCoordinates(item.locality);
-            
-            // If settings require moderation, queue it. Otherwise set to true.
             item.verifiedByAdmin = !settings.requireVerification;
-            
             items.unshift(item);
             save(KEYS.ITEMS, items);
             return item;
@@ -155,41 +183,31 @@ const Storage = (() => {
             return null;
         },
 
-        signup(name, email, password) {
-            const users = load(KEYS.USERS);
-            if (users.some(u => u.email === email)) {
-                return null;
-            }
-            const newUser = {
-                id: generateId('usr'),
-                name: name,
-                email: email,
-                password: password,
-                status: 'Active',
-                avatar: window.Config ? window.Config.PLACEHOLDERS.USER_AVATAR : "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23cbd5e1'><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/></svg>"
-            };
-            users.push(newUser);
-            save(KEYS.USERS, users);
-
-            const sessionUser = { 
-                id: newUser.id, 
-                name: newUser.name, 
-                email: newUser.email, 
-                avatar: newUser.avatar, 
-                isAdmin: false 
-            };
-            save(KEYS.SESSION, sessionUser);
-            this.addAuditLog('User Registered', `New account created for ${name} (${email})`);
-            return sessionUser;
-        },
-
         logout() {
             localStorage.removeItem(KEYS.SESSION);
         },
 
-        // --- USERS MANAGEMENT (ADMIN) ---
+        // --- USERS MANAGEMENT (ADMIN & USER SETTINGS) ---
         getUsers() {
             return load(KEYS.USERS);
+        },
+
+        updateUser(userId, updates) {
+            const users = load(KEYS.USERS);
+            const index = users.findIndex(u => u.id === userId);
+            if (index !== -1) {
+                users[index] = { ...users[index], ...updates };
+                save(KEYS.USERS, users);
+
+                // Update active session if it corresponds to current user
+                const session = load(KEYS.SESSION, null);
+                if (session && session.id === userId) {
+                    const updatedSession = { ...session, ...updates };
+                    save(KEYS.SESSION, updatedSession);
+                }
+                return users[index];
+            }
+            return null;
         },
 
         updateUserStatus(userId, status) {
@@ -365,7 +383,7 @@ const Storage = (() => {
             story.id = story.id || generateId('story');
             story.date = new Date().toISOString().split('T')[0];
             story.likes = 0;
-            story.verifiedByAdmin = false; // Default Stories also require Admin Approval
+            story.verifiedByAdmin = false;
             stories.unshift(story);
             save(KEYS.STORIES, stories);
             return story;
@@ -412,7 +430,7 @@ const Storage = (() => {
             return load(KEYS.SETTINGS, {
                 siteName: 'KochiRetrace',
                 contactEmail: 'support@kochiretrace.in',
-                logoUrl: '',
+                logoUrl: 'assets/images/logo.png',
                 uploadLimit: '5MB',
                 autoArchiveDays: 30,
                 requireVerification: true

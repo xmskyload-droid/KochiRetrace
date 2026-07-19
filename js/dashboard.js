@@ -35,6 +35,58 @@ document.addEventListener('DOMContentLoaded', () => {
     if (userNameEl) userNameEl.textContent = currentUser.name;
     if (userEmailEl) userEmailEl.textContent = currentUser.email;
 
+    // Avatar upload handling
+    const avatarUploadInput = document.getElementById('avatar-upload');
+    if (avatarUploadInput) {
+        avatarUploadInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                if (!file.type.match('image.*')) {
+                    window.showToast("File is not a valid image!", "error");
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    const img = new Image();
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        
+                        // Crop/resize to 120x120 square for clean avatar scaling
+                        const size = 120;
+                        canvas.width = size;
+                        canvas.height = size;
+                        
+                        // Calculate center-crop coordinates
+                        let sx = 0, sy = 0, sWidth = img.width, sHeight = img.height;
+                        if (img.width > img.height) {
+                            sx = (img.width - img.height) / 2;
+                            sWidth = img.height;
+                        } else {
+                            sy = (img.height - img.width) / 2;
+                            sHeight = img.width;
+                        }
+
+                        ctx.drawImage(img, sx, sy, sWidth, sHeight, 0, 0, size, size);
+                        const base64Avatar = canvas.toDataURL('image/jpeg', 0.85);
+
+                        // Save updated avatar in storage layer
+                        window.Storage.updateUser(currentUser.id, { avatar: base64Avatar });
+                        window.showToast("Profile picture updated!");
+                        
+                        // Refresh to sync session with global headers
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
+                    };
+                    img.src = evt.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
     // Tab switcher
     const tabs = [
         { btn: tabReportsBtn, panel: panelReports },

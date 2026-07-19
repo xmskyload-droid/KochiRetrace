@@ -1,4 +1,4 @@
-// config.js - Centralized configuration for categories, areas, status values, and placeholders (Updated for Admin map control)
+// config.js - Centralized configuration for categories, areas, status values, and placeholders (Updated with Firebase Config)
 
 const Config = {
     // Item Categories
@@ -51,6 +51,17 @@ const Config = {
     // Helper: get coordinates for a locality
     getCoordinates(locality) {
         return this.LOCALITIES[locality] || { lat: 9.9816, lng: 76.2995 }; // Default to central Kochi
+    },
+
+    // --- FIREBASE PRODUCTION CONFIGURATION ---
+    // Paste your Firebase web app config here to connect to the cloud
+    FIREBASE: {
+        apiKey: "",
+        authDomain: "",
+        projectId: "",
+        storageBucket: "",
+        messagingSenderId: "",
+        appId: ""
     }
 };
 

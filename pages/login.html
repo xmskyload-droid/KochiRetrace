@@ -182,7 +182,7 @@
 <!-- Dynamic Global Footer -->
 <footer id="global-footer"></footer>
 
-<script src="../js/config.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>`n<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>`n<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>`n<script src="../js/config.js"></script>
 <script src="../js/storage.js"></script>
 <script src="../js/shared.js"></script>
 <script>
@@ -229,7 +229,7 @@
     });
 
     // Form Submission
-    document.getElementById('auth-form').addEventListener('submit', function(e) {
+    document.getElementById('auth-form').addEventListener('submit', async function(e) {
         e.preventDefault();
         const email = emailInput.value.trim();
         const password = passwordInput.value.trim();
@@ -239,28 +239,40 @@
             return;
         }
 
-        if (isSignUp) {
-            const name = nameInput.value.trim();
-            const session = window.Storage.signup(name, email, password);
-            if (!session) {
-                window.showToast("Email address already registered!", "error");
-                return;
+        try {
+            if (isSignUp) {
+                const name = nameInput.value.trim();
+                let session = window.Storage.signup(name, email, password);
+                if (session instanceof Promise) {
+                    session = await session;
+                }
+                if (!session) {
+                    window.showToast("Email address already registered!", "error");
+                    return;
+                }
+                window.showToast("Account created successfully!");
+            } else {
+                let session = window.Storage.login(email, password);
+                if (session instanceof Promise) {
+                    session = await session;
+                }
+                if (!session) {
+                    window.showToast("Invalid credentials. Please sign up first!", "error");
+                    return;
+                }
+                window.showToast("Successfully logged in!");
             }
-            window.showToast("Account created successfully!");
-        } else {
-            const session = window.Storage.login(email, password);
-            if (!session) {
-                window.showToast("Invalid credentials. Please sign up first!", "error");
-                return;
-            }
-            window.showToast("Successfully logged in!");
-        }
 
-        // Redirect to homepage
-        setTimeout(() => {
-            window.location.href = '../index.html';
-        }, 1000);
+            // Redirect to homepage
+            setTimeout(() => {
+                window.location.href = '../index.html';
+            }, 1000);
+        } catch (error) {
+            console.error("Authentication error:", error);
+            window.showToast(error.message || "An authentication error occurred.", "error");
+        }
     });
 </script>
 </body>
 </html>
+

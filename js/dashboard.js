@@ -161,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // RENDER FUNCTIONS
     function renderStats() {
-        const items = window.Storage.getItems();
+        const items = window.Storage.getItems(true); // include unverified — user should see their own
         const claims = window.Storage.getClaims();
 
         const myReports = items.filter(i => i.reporterId === currentUser.id);
@@ -179,7 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderMyReports() {
-        const myReports = window.Storage.getItems().filter(i => i.reporterId === currentUser.id);
+        const myReports = window.Storage.getItems(true).filter(i => i.reporterId === currentUser.id);
         if (!reportsContainer) return;
 
         if (myReports.length === 0) {
@@ -265,7 +265,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderReceivedRequests() {
-        const items = window.Storage.getItems();
+        const items = window.Storage.getItems(true); // include unverified for received claims check
         const claims = window.Storage.getClaims();
         
         // Filter claims on items that belong to the current user

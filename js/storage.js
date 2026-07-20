@@ -205,31 +205,65 @@ const Storage = (() => {
             return load(KEYS.SESSION, null);
         },
 
+        // Alias for getUser
+        getCurrentUser() {
+            return this.getUser();
+        },
+
+        isLoggedIn() {
+            return !!this.getUser();
+        },
+
+        requireAuth(redirectPath) {
+            if (!this.isLoggedIn()) {
+                window.location.href = redirectPath || 'login.html';
+                return false;
+            }
+            return true;
+        },
+
+        requireAdmin(redirectPath) {
+            const user = this.getUser();
+            if (!user || !user.isAdmin) {
+                window.location.href = redirectPath || '../index.html';
+                return false;
+            }
+            return true;
+        },
+
+        updateSession(updates) {
+            const session = this.getUser();
+            if (session) {
+                const updated = { ...session, ...updates };
+                save(KEYS.SESSION, updated);
+                return updated;
+            }
+            return null;
+        },
+
         login(email, password) {
             if (useFirebase) {
-                // Cloud Auth signin returning Promise to caller
                 return auth.signInWithEmailAndPassword(email, password)
                     .then(cred => {
+                        const isAdmin = email === 'abhishekvp9746@gmail.com';
                         return db.collection("users").doc(cred.user.uid).get().then(doc => {
-                            const isAdmin = email === 'abhishekvp9746@gmail.com';
                             if (doc.exists) {
                                 const user = doc.data();
                                 if (user.status === 'Suspended' || user.status === 'Banned') {
                                     auth.signOut();
-                                    alert(`Access Denied: Your account has been ${user.status.toLowerCase()}.`);
-                                    return null;
+                                    throw new Error(`Your account has been ${user.status.toLowerCase()}.`);
                                 }
                                 const sessionUser = { 
-                                    id: user.id, 
-                                    name: user.name, 
-                                    email: user.email, 
-                                    avatar: user.avatar,
+                                    id: user.id || cred.user.uid, 
+                                    name: user.name || email.split('@')[0], 
+                                    email: user.email || email, 
+                                    avatar: user.avatar || window.Config.PLACEHOLDERS.USER_AVATAR,
                                     isAdmin: !!user.isAdmin || isAdmin
                                 };
                                 save(KEYS.SESSION, sessionUser);
                                 return sessionUser;
                             } else {
-                                // Self-healing: document missing in Firestore, create doc automatically
+                                // Firestore doc missing — create it (self-healing)
                                 const newUser = {
                                     id: cred.user.uid,
                                     name: email.split('@')[0],
@@ -246,17 +280,28 @@ const Storage = (() => {
                             }
                         });
                     }).catch(err => {
-                        console.error("Firebase Login failed:", err);
-                        return null;
+                        console.error("Firebase Login error:", err.code, err.message);
+                        if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential' || err.code === 'auth/invalid-login-credentials') {
+                            throw new Error("Wrong password. Please try again.");
+                        }
+                        if (err.code === 'auth/user-not-found') {
+                            throw new Error("No account found. Please sign up first.");
+                        }
+                        if (err.code === 'auth/too-many-requests') {
+                            throw new Error("Too many failed attempts. Please try again later.");
+                        }
+                        if (err.code === 'auth/invalid-email') {
+                            throw new Error("Invalid email address format.");
+                        }
+                        throw new Error(err.message || "Login failed. Please try again.");
                     });
             } else {
-                // Local Mode check
+                // Local Mode
                 const users = load(KEYS.USERS);
                 const user = users.find(u => u.email === email && u.password === password);
                 if (user) {
                     if (user.status === 'Suspended' || user.status === 'Banned') {
-                        alert(`Access Denied: Your account has been ${user.status.toLowerCase()}.`);
-                        return null;
+                        throw new Error(`Your account has been ${user.status.toLowerCase()}.`);
                     }
                     const sessionUser = { 
                         id: user.id, 
@@ -268,14 +313,13 @@ const Storage = (() => {
                     save(KEYS.SESSION, sessionUser);
                     return sessionUser;
                 }
-                return null;
+                throw new Error("Invalid email or password.");
             }
         },
 
         signup(name, email, password) {
             const isAdmin = email === 'abhishekvp9746@gmail.com';
             if (useFirebase) {
-                // Cloud Auth registration returning Promise to caller
                 return auth.createUserWithEmailAndPassword(email, password)
                     .then(cred => {
                         const newUser = {
@@ -299,18 +343,27 @@ const Storage = (() => {
                             return sessionUser;
                         });
                     }).catch(err => {
-                        console.error("Firebase Registration failed:", err);
-                        if (err && (err.code === 'auth/email-already-in-use' || err.message.includes('already in use'))) {
-                            // Self-heal: Email already registered in Firebase Auth, automatically attempt login!
+                        console.error("Firebase Signup error:", err.code, err.message);
+                        if (err.code === 'auth/email-already-in-use') {
+                            // Already registered — log them in instead
                             return this.login(email, password);
                         }
-                        return null;
+                        if (err.code === 'auth/weak-password') {
+                            throw new Error("Password must be at least 6 characters.");
+                        }
+                        if (err.code === 'auth/invalid-email') {
+                            throw new Error("Invalid email address format.");
+                        }
+                        throw new Error(err.message || "Sign up failed. Please try again.");
                     });
             } else {
                 // Local Mode signup
                 const users = load(KEYS.USERS);
                 if (users.some(u => u.email === email)) {
-                    return null;
+                    throw new Error("This email is already registered. Please log in.");
+                }
+                if (password.length < 6) {
+                    throw new Error("Password must be at least 6 characters.");
                 }
                 const newUser = {
                     id: generateId('usr'),

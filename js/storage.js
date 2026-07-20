@@ -331,7 +331,8 @@ const Storage = (() => {
         },
 
         signup(name, email, password) {
-            const isAdmin = email === 'abhishekvp9746@gmail.com';\n            if (useFirebase) {
+            const isAdmin = email === 'abhishekvp9746@gmail.com';
+            if (useFirebase) {
                 return auth.createUserWithEmailAndPassword(email, password)
                     .then(cred => {
                         // Save session immediately from Auth credential (Firestore-independent)

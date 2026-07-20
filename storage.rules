@@ -1,0 +1,29 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // ─── User uploads ──────────────────────────────────────────────────────────
+    // Path: /uploads/{userId}/{filename}
+    // - Only authenticated users may upload
+    // - Users can only write to their own folder
+    // - Images only (MIME type must start with "image/")
+    // - Maximum 5 MB per file
+    // - Public read for displaying images on the site
+    match /uploads/{userId}/{allPaths=**} {
+      allow read: if true;
+
+      allow write: if request.auth != null
+        && request.auth.uid == userId
+        && request.resource.size <= 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+
+      allow delete: if request.auth != null
+        && request.auth.uid == userId;
+    }
+
+    // ─── Deny everything else ─────────────────────────────────────────────────
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

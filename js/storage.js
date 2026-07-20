@@ -30,15 +30,22 @@ const Storage = (() => {
         return `${prefix}_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
     }
 
-    // Initialize databases
+    // Silent logger â€” set to true locally if you need debug output
+    const DEBUG = false;
+    function _log(...args)  { if (DEBUG) console.log(...args); }
+    function _warn(...args) { if (DEBUG) _warn(...args); }
+    function _err(...args)  { if (DEBUG) _err(...args); }
+
+    // Initialize databases with safe defaults
     function initDatabase() {
         if (!localStorage.getItem(KEYS.USERS)) {
+            // Seed only a placeholder admin entry (no plaintext password stored).
+            // The real admin account is managed entirely by Firebase Authentication.
             const defaultUsers = [
                 {
                     id: 'usr_admin',
                     name: 'Administrator',
                     email: 'abhishekvp9746@gmail.com',
-                    password: 'Abhishekvp@2006',
                     isAdmin: true,
                     status: 'Active',
                     avatar: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23cbd5e1'><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/></svg>"
@@ -82,9 +89,9 @@ const Storage = (() => {
             db   = firebase.firestore(app);
             auth = firebase.auth(app);
             useFirebase = true;
-            console.log('%cKochiRetrace ✅ Firebase connected', 'color:green;font-weight:bold');
+            console.log('%cKochiRetrace \u2705 Firebase connected', 'color:green;font-weight:bold'); // intentional: visible connection status
 
-            // Helper to attach a safe onSnapshot listener
+            // Attach a safe live-sync listener with error handling
             function liveSync(collectionName, key) {
                 db.collection(collectionName).onSnapshot(
                     snapshot => {
@@ -92,7 +99,7 @@ const Storage = (() => {
                         snapshot.forEach(doc => list.push({ id: doc.id, ...doc.data() }));
                         save(key, list);
                     },
-                    err => console.warn(`Firestore onSnapshot error [${collectionName}]:`, err.message)
+                    err => _warn(`Firestore listener [${collectionName}]:`, err.message)
                 );
             }
 
@@ -107,15 +114,15 @@ const Storage = (() => {
             // Settings (single doc, not a collection)
             db.collection('settings').doc('global').onSnapshot(
                 doc => { if (doc.exists) save(KEYS.SETTINGS, doc.data()); },
-                err => console.warn('Firestore onSnapshot error [settings]:', err.message)
+                err => _warn('Firestore listener [settings]:', err.message)
             );
 
         } catch (err) {
-            console.error('Firebase init failed — falling back to LocalStorage:', err.message);
+            _err('Firebase init failed â€” falling back to LocalStorage:', err.message);
             useFirebase = false;
         }
     } else {
-        console.log('KochiRetrace: running in offline/localStorage mode.');
+        _log('KochiRetrace: running in offline/localStorage mode.');
     }
 
 
@@ -143,7 +150,7 @@ const Storage = (() => {
 
             // Cloud sync
             if (useFirebase) {
-                db.collection("items").doc(item.id).set(item).catch(e => console.error("Cloud save failed:", e));
+                db.collection("items").doc(item.id).set(item).catch(e => _err("Cloud save failed:", e));
             }
             return item;
         },
@@ -163,7 +170,7 @@ const Storage = (() => {
                 
                 // Cloud sync
                 if (useFirebase) {
-                    db.collection("items").doc(id).update(updates).catch(e => console.error("Cloud update failed:", e));
+                    db.collection("items").doc(id).update(updates).catch(e => _err("Cloud update failed:", e));
                 }
                 return items[index];
             }
@@ -178,7 +185,7 @@ const Storage = (() => {
 
             // Cloud sync
             if (useFirebase) {
-                db.collection("items").doc(id).delete().catch(e => console.error("Cloud delete failed:", e));
+                db.collection("items").doc(id).delete().catch(e => _err("Cloud delete failed:", e));
             }
             return true;
         },
@@ -256,7 +263,7 @@ const Storage = (() => {
                                     save(KEYS.SESSION, sessionUser);
                                     return sessionUser;
                                 } else {
-                                    // Firestore doc missing — save fallback and try to create doc
+                                    // Firestore doc missing â€” save fallback and try to create doc
                                     save(KEYS.SESSION, fallbackSession);
                                     db.collection("users").doc(cred.user.uid).set({
                                         id: cred.user.uid,
@@ -270,13 +277,13 @@ const Storage = (() => {
                                 }
                             })
                             .catch(firestoreErr => {
-                                // Firestore offline — use Auth credential fallback so login still works
-                                console.warn("Firestore unavailable, using Auth-only session:", firestoreErr.message);
+                                // Firestore offline â€” use Auth credential fallback so login still works
+                                _warn("Firestore unavailable, using Auth-only session:", firestoreErr.message);
                                 save(KEYS.SESSION, fallbackSession);
                                 return fallbackSession;
                             });
                     }).catch(err => {
-                        console.error("Firebase Login error:", err.code, err.message);
+                        _err("Firebase Login error:", err.code, err.message);
                         if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential' || err.code === 'auth/invalid-login-credentials') {
                             throw new Error("Wrong password. Please try again.");
                         }
@@ -336,13 +343,13 @@ const Storage = (() => {
                         };
                         db.collection("users").doc(newUser.id).set(newUser)
                             .then(() => this.addAuditLog('User Registered', `New cloud account created for ${name} (${email})`))
-                            .catch(e => console.warn("Firestore user doc save failed (offline):", e.message));
+                            .catch(e => _warn("Firestore user doc save failed (offline):", e.message));
 
                         return sessionUser;
                     }).catch(err => {
-                        console.error("Firebase Signup error:", err.code, err.message);
+                        _err("Firebase Signup error:", err.code, err.message);
                         if (err.code === 'auth/email-already-in-use') {
-                            // Already registered — log them in instead
+                            // Already registered â€” log them in instead
                             return this.login(email, password);
                         }
                         if (err.code === 'auth/weak-password') {
@@ -389,7 +396,7 @@ const Storage = (() => {
 
         logout() {
             if (useFirebase) {
-                auth.signOut().catch(e => console.error("Cloud logout error:", e));
+                auth.signOut().catch(e => _err("Cloud logout error:", e));
             }
             localStorage.removeItem(KEYS.SESSION);
         },
@@ -416,7 +423,7 @@ const Storage = (() => {
 
                 // Cloud Sync
                 if (useFirebase) {
-                    db.collection("users").doc(userId).update(updates).catch(e => console.error("Cloud user update failed:", e));
+                    db.collection("users").doc(userId).update(updates).catch(e => _err("Cloud user update failed:", e));
                 }
                 return users[index];
             }
@@ -434,7 +441,7 @@ const Storage = (() => {
                 
                 // Cloud Sync
                 if (useFirebase) {
-                    db.collection("users").doc(userId).update({ status }).catch(e => console.error("Cloud status update failed:", e));
+                    db.collection("users").doc(userId).update({ status }).catch(e => _err("Cloud status update failed:", e));
                 }
                 return users[index];
             }
@@ -453,7 +460,7 @@ const Storage = (() => {
 
                 // Cloud Sync
                 if (useFirebase) {
-                    db.collection("users").doc(userId).delete().catch(e => console.error("Cloud user delete failed:", e));
+                    db.collection("users").doc(userId).delete().catch(e => _err("Cloud user delete failed:", e));
                 }
                 return true;
             }
@@ -489,7 +496,7 @@ const Storage = (() => {
 
             // Cloud Sync
             if (useFirebase) {
-                db.collection("claims").doc(claim.id).set(claim).catch(e => console.error("Cloud claim save failed:", e));
+                db.collection("claims").doc(claim.id).set(claim).catch(e => _err("Cloud claim save failed:", e));
             }
 
             // Create notification for item reporter
@@ -529,7 +536,7 @@ const Storage = (() => {
 
                 // Cloud Sync
                 if (useFirebase) {
-                    db.collection("claims").doc(id).update({ status }).catch(e => console.error("Cloud update claim failed:", e));
+                    db.collection("claims").doc(id).update({ status }).catch(e => _err("Cloud update claim failed:", e));
                 }
 
                 // Notify claimer of updates
@@ -577,7 +584,7 @@ const Storage = (() => {
 
             // Cloud Sync
             if (useFirebase) {
-                db.collection("notifications").doc(notif.id).set(notif).catch(e => console.error("Cloud notification save failed:", e));
+                db.collection("notifications").doc(notif.id).set(notif).catch(e => _err("Cloud notification save failed:", e));
             }
             return notif;
         },
@@ -592,7 +599,7 @@ const Storage = (() => {
                     n.read = true;
                     // Cloud Sync
                     if (useFirebase) {
-                        db.collection("notifications").doc(n.id).update({ read: true }).catch(e => console.error("Cloud notif read failed:", e));
+                        db.collection("notifications").doc(n.id).update({ read: true }).catch(e => _err("Cloud notif read failed:", e));
                     }
                 }
             });
@@ -625,7 +632,7 @@ const Storage = (() => {
 
             // Cloud Sync
             if (useFirebase) {
-                db.collection("messages").doc(msg.id).set(msg).catch(e => console.error("Cloud message send failed:", e));
+                db.collection("messages").doc(msg.id).set(msg).catch(e => _err("Cloud message send failed:", e));
             }
             return msg;
         },
@@ -648,7 +655,7 @@ const Storage = (() => {
 
             // Cloud Sync
             if (useFirebase) {
-                db.collection("stories").doc(story.id).set(story).catch(e => console.error("Cloud story save failed:", e));
+                db.collection("stories").doc(story.id).set(story).catch(e => _err("Cloud story save failed:", e));
             }
             return story;
         },
@@ -664,7 +671,7 @@ const Storage = (() => {
 
                 // Cloud Sync
                 if (useFirebase) {
-                    db.collection("stories").doc(storyId).update({ verifiedByAdmin: verified }).catch(e => console.error("Cloud story verify failed:", e));
+                    db.collection("stories").doc(storyId).update({ verifiedByAdmin: verified }).catch(e => _err("Cloud story verify failed:", e));
                 }
                 return stories[index];
             }
@@ -680,7 +687,7 @@ const Storage = (() => {
 
             // Cloud Sync
             if (useFirebase) {
-                db.collection("stories").doc(storyId).delete().catch(e => console.error("Cloud story delete failed:", e));
+                db.collection("stories").doc(storyId).delete().catch(e => _err("Cloud story delete failed:", e));
             }
             return true;
         },
@@ -703,7 +710,7 @@ const Storage = (() => {
             save(KEYS.AUDIT_LOGS, logs);
 
             if (useFirebase) {
-                db.collection("audit_logs").doc(log.id).set(log).catch(e => console.error("Cloud log save failed:", e));
+                db.collection("audit_logs").doc(log.id).set(log).catch(e => _err("Cloud log save failed:", e));
             }
         },
 
@@ -724,7 +731,7 @@ const Storage = (() => {
             this.addAuditLog('System Settings Changed', 'Global website parameters updated by administrator');
 
             if (useFirebase) {
-                db.collection("settings").doc("global").set(settings).catch(e => console.error("Cloud settings save failed:", e));
+                db.collection("settings").doc("global").set(settings).catch(e => _err("Cloud settings save failed:", e));
             }
         }
     };
@@ -732,3 +739,4 @@ const Storage = (() => {
 
 // Export storage to window context
 window.Storage = Storage;
+

@@ -1,0 +1,128 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ─── Helpers ──────────────────────────────────────────────────────────────
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isAuth() && request.auth.uid == uid;
+    }
+
+    function isAdmin() {
+      return isAuth() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+
+    function hasField(field) {
+      return field in request.resource.data;
+    }
+
+    // ─── items (Lost & Found listings) ────────────────────────────────────────
+    // Public read; only the reporter can edit their own; admins can do anything.
+    match /items/{itemId} {
+      allow read: if true;
+
+      allow create: if isAuth()
+        && hasField('name')
+        && hasField('status')
+        && hasField('reporterId')
+        && request.resource.data.reporterId == request.auth.uid;
+
+      allow update: if (isAuth() && resource.data.reporterId == request.auth.uid)
+        || isAdmin();
+
+      allow delete: if (isAuth() && resource.data.reporterId == request.auth.uid)
+        || isAdmin();
+    }
+
+    // ─── users ────────────────────────────────────────────────────────────────
+    // Each user can read/write only their own profile; admins can read all.
+    match /users/{userId} {
+      allow read:   if isOwner(userId) || isAdmin();
+      allow create: if isAuth() && request.auth.uid == userId;
+      allow update: if isOwner(userId) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ─── claims ───────────────────────────────────────────────────────────────
+    // Claimant or item reporter (plus admin) can read; only claimant can create.
+    match /claims/{claimId} {
+      allow read: if isAuth() && (
+        resource.data.claimerId    == request.auth.uid ||
+        resource.data.reporterId   == request.auth.uid ||
+        isAdmin()
+      );
+
+      allow create: if isAuth()
+        && hasField('claimerId')
+        && request.resource.data.claimerId == request.auth.uid;
+
+      allow update: if isAdmin()
+        || (isAuth() && resource.data.reporterId == request.auth.uid);
+
+      allow delete: if isAdmin();
+    }
+
+    // ─── messages ─────────────────────────────────────────────────────────────
+    // Only conversation participants can read/write.
+    match /messages/{messageId} {
+      allow read: if isAuth() && (
+        resource.data.senderId    == request.auth.uid ||
+        resource.data.receiverId  == request.auth.uid ||
+        isAdmin()
+      );
+
+      allow create: if isAuth()
+        && hasField('senderId')
+        && request.resource.data.senderId == request.auth.uid;
+
+      allow update, delete: if isAdmin();
+    }
+
+    // ─── notifications ────────────────────────────────────────────────────────
+    // Only the intended recipient can access their notifications.
+    match /notifications/{notifId} {
+      allow read:   if isAuth() && resource.data.userId == request.auth.uid;
+      allow create: if isAuth();
+      allow update: if isAuth() && resource.data.userId == request.auth.uid;
+      allow delete: if (isAuth() && resource.data.userId == request.auth.uid)
+        || isAdmin();
+    }
+
+    // ─── stories (Success Stories) ────────────────────────────────────────────
+    // Public read; any authenticated user can submit; admin moderates.
+    match /stories/{storyId} {
+      allow read: if true;
+
+      allow create: if isAuth();
+
+      allow update: if isAdmin()
+        || (isAuth() && resource.data.authorId == request.auth.uid);
+
+      allow delete: if isAdmin();
+    }
+
+    // ─── audit_logs ───────────────────────────────────────────────────────────
+    // Only admins can read; authenticated users can append; no edits/deletes.
+    match /audit_logs/{logId} {
+      allow read:          if isAdmin();
+      allow create:        if isAuth();
+      allow update, delete: if false;
+    }
+
+    // ─── settings ─────────────────────────────────────────────────────────────
+    // Public read for site config; only admin can write.
+    match /settings/{docId} {
+      allow read:  if true;
+      allow write: if isAdmin();
+    }
+
+    // ─── Deny everything else by default ──────────────────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

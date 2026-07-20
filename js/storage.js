@@ -246,39 +246,52 @@ const Storage = (() => {
                 return auth.signInWithEmailAndPassword(email, password)
                     .then(cred => {
                         const isAdmin = email === 'abhishekvp9746@gmail.com';
-                        return db.collection("users").doc(cred.user.uid).get().then(doc => {
-                            if (doc.exists) {
-                                const user = doc.data();
-                                if (user.status === 'Suspended' || user.status === 'Banned') {
-                                    auth.signOut();
-                                    throw new Error(`Your account has been ${user.status.toLowerCase()}.`);
-                                }
-                                const sessionUser = { 
-                                    id: user.id || cred.user.uid, 
-                                    name: user.name || email.split('@')[0], 
-                                    email: user.email || email, 
-                                    avatar: user.avatar || window.Config.PLACEHOLDERS.USER_AVATAR,
-                                    isAdmin: !!user.isAdmin || isAdmin
-                                };
-                                save(KEYS.SESSION, sessionUser);
-                                return sessionUser;
-                            } else {
-                                // Firestore doc missing — create it (self-healing)
-                                const newUser = {
-                                    id: cred.user.uid,
-                                    name: email.split('@')[0],
-                                    email: email,
-                                    status: 'Active',
-                                    isAdmin: isAdmin,
-                                    avatar: window.Config.PLACEHOLDERS.USER_AVATAR
-                                };
-                                return db.collection("users").doc(newUser.id).set(newUser).then(() => {
-                                    const sessionUser = { id: newUser.id, name: newUser.name, email: newUser.email, avatar: newUser.avatar, isAdmin: isAdmin };
+                        // Build fallback session from Auth credential (works even if Firestore offline)
+                        const fallbackSession = {
+                            id: cred.user.uid,
+                            name: cred.user.displayName || email.split('@')[0],
+                            email: cred.user.email || email,
+                            avatar: window.Config.PLACEHOLDERS.USER_AVATAR,
+                            isAdmin: isAdmin
+                        };
+
+                        return db.collection("users").doc(cred.user.uid).get()
+                            .then(doc => {
+                                if (doc.exists) {
+                                    const user = doc.data();
+                                    if (user.status === 'Suspended' || user.status === 'Banned') {
+                                        auth.signOut();
+                                        throw new Error(`Your account has been ${user.status.toLowerCase()}.`);
+                                    }
+                                    const sessionUser = { 
+                                        id: user.id || cred.user.uid, 
+                                        name: user.name || fallbackSession.name, 
+                                        email: user.email || email, 
+                                        avatar: user.avatar || window.Config.PLACEHOLDERS.USER_AVATAR,
+                                        isAdmin: !!user.isAdmin || isAdmin
+                                    };
                                     save(KEYS.SESSION, sessionUser);
                                     return sessionUser;
-                                });
-                            }
-                        });
+                                } else {
+                                    // Firestore doc missing — save fallback and try to create doc
+                                    save(KEYS.SESSION, fallbackSession);
+                                    db.collection("users").doc(cred.user.uid).set({
+                                        id: cred.user.uid,
+                                        name: fallbackSession.name,
+                                        email: email,
+                                        status: 'Active',
+                                        isAdmin: isAdmin,
+                                        avatar: window.Config.PLACEHOLDERS.USER_AVATAR
+                                    }).catch(() => {});
+                                    return fallbackSession;
+                                }
+                            })
+                            .catch(firestoreErr => {
+                                // Firestore offline — use Auth credential fallback so login still works
+                                console.warn("Firestore unavailable, using Auth-only session:", firestoreErr.message);
+                                save(KEYS.SESSION, fallbackSession);
+                                return fallbackSession;
+                            });
                     }).catch(err => {
                         console.error("Firebase Login error:", err.code, err.message);
                         if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential' || err.code === 'auth/invalid-login-credentials') {
@@ -318,30 +331,30 @@ const Storage = (() => {
         },
 
         signup(name, email, password) {
-            const isAdmin = email === 'abhishekvp9746@gmail.com';
-            if (useFirebase) {
+            const isAdmin = email === 'abhishekvp9746@gmail.com';\n            if (useFirebase) {
                 return auth.createUserWithEmailAndPassword(email, password)
                     .then(cred => {
+                        // Save session immediately from Auth credential (Firestore-independent)
+                        const sessionUser = { 
+                            id: cred.user.uid, 
+                            name: name, 
+                            email: email, 
+                            avatar: window.Config.PLACEHOLDERS.USER_AVATAR, 
+                            isAdmin: isAdmin 
+                        };
+                        save(KEYS.SESSION, sessionUser);
+
+                        // Try to persist user doc to Firestore in background (non-blocking)
                         const newUser = {
-                            id: cred.user.uid,
-                            name: name,
-                            email: email,
-                            status: 'Active',
-                            isAdmin: isAdmin,
+                            id: cred.user.uid, name, email,
+                            status: 'Active', isAdmin,
                             avatar: window.Config.PLACEHOLDERS.USER_AVATAR
                         };
-                        return db.collection("users").doc(newUser.id).set(newUser).then(() => {
-                            const sessionUser = { 
-                                id: newUser.id, 
-                                name: newUser.name, 
-                                email: newUser.email, 
-                                avatar: newUser.avatar, 
-                                isAdmin: isAdmin 
-                            };
-                            save(KEYS.SESSION, sessionUser);
-                            this.addAuditLog('User Registered', `New cloud account created for ${name} (${email})`);
-                            return sessionUser;
-                        });
+                        db.collection("users").doc(newUser.id).set(newUser)
+                            .then(() => this.addAuditLog('User Registered', `New cloud account created for ${name} (${email})`))
+                            .catch(e => console.warn("Firestore user doc save failed (offline):", e.message));
+
+                        return sessionUser;
                     }).catch(err => {
                         console.error("Firebase Signup error:", err.code, err.message);
                         if (err.code === 'auth/email-already-in-use') {

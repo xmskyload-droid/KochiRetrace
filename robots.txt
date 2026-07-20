@@ -1,0 +1,24 @@
+# robots.txt for KochiRetrace (Ernakulam Lost & Found Portal)
+User-agent: *
+Allow: /
+Allow: /index.html
+Allow: /pages/browse.html
+Allow: /pages/map.html
+Allow: /pages/community.html
+Allow: /pages/about.html
+Allow: /pages/contact.html
+Allow: /pages/faq.html
+Allow: /pages/guides.html
+Allow: /pages/localities.html
+Allow: /pages/privacy.html
+Allow: /pages/terms.html
+
+# Block private user dashboards and admin control panels from search indexing
+Disallow: /pages/admin.html
+Disallow: /pages/dashboard.html
+Disallow: /pages/messages.html
+Disallow: /pages/login.html
+Disallow: /pages/report.html
+
+# XML Sitemap location
+Sitemap: https://kochiretrace.netlify.app/sitemap.xml

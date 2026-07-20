@@ -60,7 +60,7 @@ function renderHeader(rootPrefix, pagesPrefix) {
     if (!headerEl) return;
 
     // Apply header classes
-    headerEl.className = "bg-surface-container-lowest/90 backdrop-blur-md dark:bg-slate-900/90 shadow-sm sticky top-0 z-50 transition-all duration-300 w-full";
+    headerEl.className = "bg-surface-container-lowest/95 backdrop-blur-md shadow-sm sticky top-0 z-50 transition-all duration-300 w-full border-b border-slate-100";
     headerEl.style.height = "80px";
 
     const user = window.Storage ? window.Storage.getUser() : null;
@@ -69,27 +69,29 @@ function renderHeader(rootPrefix, pagesPrefix) {
 
     // Create Navigation HTML
     let navHtml = `
-    <nav class="flex justify-between items-center w-full px-6 md:px-10 max-w-[1280px] mx-auto h-full">
+    <nav class="flex justify-between items-center w-full px-4 md:px-8 max-w-[1280px] mx-auto h-full" aria-label="Main Navigation">
         <!-- Logo -->
-        <a class="flex items-center" href="${rootPrefix}index.html">
-            <img src="${rootPrefix}assets/images/logo.png" class="h-14 w-auto object-contain bg-white rounded-lg p-1 shadow-sm border border-slate-100" alt="KochiRetrace Logo">
+        <a class="flex items-center gap-3 group" href="${rootPrefix}index.html" aria-label="KochiRetrace Home">
+            <img src="${rootPrefix}assets/images/logo.png" class="h-12 w-auto object-contain bg-white rounded-lg p-1 shadow-sm border border-slate-100 transition-transform group-hover:scale-105" alt="KochiRetrace Logo">
         </a>
 
         <!-- Middle Nav Links -->
-        <div class="hidden md:flex gap-8 items-center">
-            <a class="nav-link text-on-surface-variant dark:text-slate-300 hover:text-primary dark:hover:text-primary-fixed transition-colors font-semibold" href="${rootPrefix}index.html" id="nav-home">Home</a>
-            <a class="nav-link text-on-surface-variant dark:text-slate-300 hover:text-primary dark:hover:text-primary-fixed transition-colors font-semibold" href="${pagesPrefix}browse.html" id="nav-browse">Browse</a>
-            <a class="nav-link text-on-surface-variant dark:text-slate-300 hover:text-primary dark:hover:text-primary-fixed transition-colors font-semibold" href="${pagesPrefix}map.html" id="nav-map">Map</a>
-            <a class="nav-link text-on-surface-variant dark:text-slate-300 hover:text-primary dark:hover:text-primary-fixed transition-colors font-semibold" href="${pagesPrefix}community.html" id="nav-community">Community</a>
-            ${user ? `<a class="nav-link text-on-surface-variant dark:text-slate-300 hover:text-primary dark:hover:text-primary-fixed transition-colors font-semibold" href="${pagesPrefix}dashboard.html" id="nav-dashboard">Dashboard</a>` : ''}
+        <div class="hidden lg:flex gap-6 items-center">
+            <a class="nav-link text-slate-700 hover:text-primary transition-colors font-semibold text-sm" href="${rootPrefix}index.html" id="nav-home">Home</a>
+            <a class="nav-link text-slate-700 hover:text-primary transition-colors font-semibold text-sm" href="${pagesPrefix}browse.html" id="nav-browse">Browse Items</a>
+            <a class="nav-link text-slate-700 hover:text-primary transition-colors font-semibold text-sm" href="${pagesPrefix}localities.html" id="nav-localities">Localities</a>
+            <a class="nav-link text-slate-700 hover:text-primary transition-colors font-semibold text-sm" href="${pagesPrefix}guides.html" id="nav-guides">Guides & FAQ</a>
+            <a class="nav-link text-slate-700 hover:text-primary transition-colors font-semibold text-sm" href="${pagesPrefix}map.html" id="nav-map">Map</a>
+            <a class="nav-link text-slate-700 hover:text-primary transition-colors font-semibold text-sm" href="${pagesPrefix}community.html" id="nav-community">Community</a>
+            ${user ? `<a class="nav-link text-slate-700 hover:text-primary transition-colors font-semibold text-sm" href="${pagesPrefix}dashboard.html" id="nav-dashboard">Dashboard</a>` : ''}
         </div>
 
         <!-- Right Side Controls -->
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-3">
             <!-- Report Button -->
-            <a href="${pagesPrefix}report.html" class="hidden lg:flex items-center gap-2 bg-primary dark:bg-primary-container text-white px-5 py-2 rounded-full font-semibold text-sm transition-all active:scale-95 hover:opacity-90 shadow-md">
+            <a href="${pagesPrefix}report.html" class="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-full font-bold text-xs md:text-sm transition-all active:scale-95 hover:bg-primary-container shadow-md">
                 <span class="material-symbols-outlined text-base">add_circle</span>
-                Report Item
+                <span>Report Item</span>
             </a>
     `;
 
@@ -98,61 +100,61 @@ function renderHeader(rootPrefix, pagesPrefix) {
         navHtml += `
             <!-- Notification Bell -->
             <div class="relative">
-                <button id="notif-bell-btn" class="p-2 hover:bg-surface-container dark:hover:bg-slate-800 rounded-full transition-colors text-on-surface-variant dark:text-slate-300 flex items-center justify-center">
+                <button id="notif-bell-btn" aria-label="Notifications" class="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-700 flex items-center justify-center">
                     <span class="material-symbols-outlined">notifications</span>
                     ${unreadNotifs.length > 0 ? `<span class="absolute top-1 right-1 w-4 h-4 bg-error text-white text-[9px] rounded-full flex items-center justify-center font-bold">${unreadNotifs.length}</span>` : ''}
                 </button>
                 
                 <!-- Notification Dropdown -->
-                <div id="notif-dropdown" class="hidden absolute right-0 mt-3 w-80 bg-white dark:bg-slate-800 border border-outline-variant dark:border-slate-700 rounded-2xl shadow-xl z-50 overflow-hidden">
-                    <div class="p-4 border-b border-outline-variant dark:border-slate-700 flex justify-between items-center">
-                        <span class="font-bold text-sm text-on-surface dark:text-white">Notifications</span>
-                        ${unreadNotifs.length > 0 ? `<button onclick="markAllNotificationsRead()" class="text-xs text-primary dark:text-primary-fixed hover:underline">Mark read</button>` : ''}
+                <div id="notif-dropdown" class="hidden absolute right-0 mt-3 w-80 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 overflow-hidden">
+                    <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                        <span class="font-bold text-sm text-slate-900">Notifications</span>
+                        ${unreadNotifs.length > 0 ? `<button onclick="markAllNotificationsRead()" class="text-xs text-primary hover:underline">Mark read</button>` : ''}
                     </div>
                     <div class="max-h-64 overflow-y-auto">
                         ${notifs.length === 0 ? `
-                            <div class="p-6 text-center text-xs text-on-surface-variant dark:text-slate-400">No notifications yet</div>
+                            <div class="p-6 text-center text-xs text-slate-500">No notifications yet</div>
                         ` : notifs.map(n => `
-                            <a href="${pagesPrefix}${n.link}" class="block p-4 border-b border-outline-variant/30 dark:border-slate-700/30 hover:bg-surface-container-low dark:hover:bg-slate-700/50 transition-colors ${!n.read ? 'bg-primary-container/10 dark:bg-primary-container/5 font-semibold' : ''}">
-                                <p class="text-xs font-bold text-slate-800 dark:text-slate-200">${n.title || 'Update'}</p>
-                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${n.text}</p>
-                                <span class="text-[10px] text-outline dark:text-slate-500 mt-1 block">${formatTimeAgo(n.timestamp)}</span>
+                            <a href="${pagesPrefix}${n.link}" class="block p-4 border-b border-slate-100 hover:bg-slate-50 transition-colors ${!n.read ? 'bg-blue-50/50 font-semibold' : ''}">
+                                <p class="text-xs font-bold text-slate-800">${n.title || 'Update'}</p>
+                                <p class="text-xs text-slate-500 mt-0.5">${n.text}</p>
+                                <span class="text-[10px] text-slate-400 mt-1 block">${formatTimeAgo(n.timestamp)}</span>
                             </a>
                         `).join('')}
                     </div>
-                    <div class="p-3 bg-surface-container-low dark:bg-slate-900 border-t border-outline-variant dark:border-slate-700 text-center">
-                        <a href="${pagesPrefix}dashboard.html" class="text-xs text-primary dark:text-primary-fixed hover:underline font-bold">View all notifications</a>
+                    <div class="p-3 bg-slate-50 border-t border-slate-100 text-center">
+                        <a href="${pagesPrefix}dashboard.html" class="text-xs text-primary hover:underline font-bold">View all notifications</a>
                     </div>
                 </div>
             </div>
 
             <!-- Profile Menu Dropdown -->
             <div class="relative">
-                <div id="profile-dropdown-btn" class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-fixed cursor-pointer transition-all active:scale-95">
-                    <img class="w-full h-full object-cover" src="${user.avatar}" alt="Profile">
-                </div>
+                <button id="profile-dropdown-btn" aria-label="User menu" class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-fixed cursor-pointer transition-all active:scale-95 flex items-center justify-center bg-slate-100">
+                    <img class="w-full h-full object-cover" src="${user.avatar}" alt="${user.name}">
+                </button>
                 
                 <!-- Profile Dropdown -->
-                <div id="profile-dropdown" class="hidden absolute right-0 mt-3 w-56 bg-white dark:bg-slate-800 border border-outline-variant dark:border-slate-700 rounded-2xl shadow-xl z-50 overflow-hidden">
-                    <div class="p-4 border-b border-outline-variant dark:border-slate-700">
-                        <p class="font-bold text-sm text-on-surface dark:text-white truncate">${user.name}</p>
-                        <p class="text-xs text-on-surface-variant dark:text-slate-400 truncate">${user.email}</p>
+                <div id="profile-dropdown" class="hidden absolute right-0 mt-3 w-56 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 overflow-hidden">
+                    <div class="p-4 border-b border-slate-100 bg-slate-50">
+                        <p class="font-bold text-sm text-slate-900 truncate">${user.name}</p>
+                        <p class="text-xs text-slate-500 truncate">${user.email}</p>
                     </div>
                     <div class="py-1">
                         ${user.isAdmin ? `
-                            <a href="${pagesPrefix}admin.html" class="flex items-center gap-3 px-4 py-2.5 text-sm text-primary dark:text-primary-fixed hover:bg-surface-container dark:hover:bg-slate-700 transition-colors font-bold">
+                            <a href="${pagesPrefix}admin.html" class="flex items-center gap-3 px-4 py-2.5 text-sm text-primary hover:bg-slate-50 transition-colors font-bold">
                                 <span class="material-symbols-outlined text-lg">admin_panel_settings</span> Admin Panel
                             </a>
                         ` : ''}
-                        <a href="${pagesPrefix}dashboard.html" class="flex items-center gap-3 px-4 py-2.5 text-sm text-on-surface dark:text-slate-200 hover:bg-surface-container dark:hover:bg-slate-700 transition-colors">
+                        <a href="${pagesPrefix}dashboard.html" class="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors">
                             <span class="material-symbols-outlined text-lg">dashboard</span> Dashboard
                         </a>
-                        <a href="${pagesPrefix}messages.html" class="flex items-center gap-3 px-4 py-2.5 text-sm text-on-surface dark:text-slate-200 hover:bg-surface-container dark:hover:bg-slate-700 transition-colors">
+                        <a href="${pagesPrefix}messages.html" class="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors">
                             <span class="material-symbols-outlined text-lg">mail</span> Messages
                         </a>
                     </div>
-                    <div class="border-t border-outline-variant dark:border-slate-700 py-1">
-                        <button onclick="handleLogout('${rootPrefix}')" class="w-full text-left flex items-center gap-3 px-4 py-2.5 text-sm text-error hover:bg-error-container/20 transition-colors">
+                    <div class="border-t border-slate-100 py-1">
+                        <button onclick="handleLogout('${rootPrefix}')" class="w-full text-left flex items-center gap-3 px-4 py-2.5 text-sm text-error hover:bg-red-50 transition-colors">
                             <span class="material-symbols-outlined text-lg">logout</span> Log Out
                         </button>
                     </div>
@@ -162,7 +164,7 @@ function renderHeader(rootPrefix, pagesPrefix) {
     } else {
         // Logged Out Controls
         navHtml += `
-            <a href="${pagesPrefix}login.html" class="bg-primary-container/20 text-primary dark:text-primary-fixed border border-primary-container/30 px-5 py-2 rounded-full font-semibold text-sm hover:bg-primary-container/30 transition-all active:scale-95">
+            <a href="${pagesPrefix}login.html" class="bg-primary-container/20 text-primary border border-primary-container/30 px-4 py-2 rounded-full font-semibold text-xs md:text-sm hover:bg-primary-container/30 transition-all active:scale-95">
                 Sign In
             </a>
         `;
@@ -170,29 +172,54 @@ function renderHeader(rootPrefix, pagesPrefix) {
 
     navHtml += `
             <!-- Mobile Menu Toggle -->
-            <button id="mobile-menu-btn" class="md:hidden p-2 text-on-surface-variant dark:text-slate-300 hover:bg-surface-container dark:hover:bg-slate-800 rounded-full flex items-center justify-center">
+            <button id="mobile-menu-btn" aria-label="Toggle Navigation Menu" class="lg:hidden p-2 text-slate-700 hover:bg-slate-100 rounded-full flex items-center justify-center">
                 <span class="material-symbols-outlined">menu</span>
             </button>
         </div>
     </nav>
 
     <!-- Mobile Drawer Nav -->
-    <div id="mobile-drawer" class="hidden fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden flex justify-end">
-        <div class="w-72 bg-white dark:bg-slate-800 h-full p-6 flex flex-col gap-6 shadow-2xl relative">
-            <button id="mobile-drawer-close" class="absolute top-4 right-4 p-2 text-on-surface-variant dark:text-slate-300">
+    <div id="mobile-drawer" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm lg:hidden flex justify-end">
+        <div class="w-72 bg-white h-full p-6 flex flex-col gap-5 shadow-2xl relative overflow-y-auto">
+            <button id="mobile-drawer-close" aria-label="Close menu" class="absolute top-4 right-4 p-2 text-slate-600 hover:bg-slate-100 rounded-full">
                 <span class="material-symbols-outlined">close</span>
             </button>
-            <div class="text-xl font-extrabold text-primary dark:text-primary-fixed mt-6">KochiRetrace</div>
-            <div class="flex flex-col gap-4 mt-8">
-                <a class="text-lg font-semibold text-on-surface dark:text-slate-200" href="${rootPrefix}index.html">Home</a>
-                <a class="text-lg font-semibold text-on-surface dark:text-slate-200" href="${pagesPrefix}browse.html">Browse</a>
-                <a class="text-lg font-semibold text-on-surface dark:text-slate-200" href="${pagesPrefix}map.html">Map</a>
-                <a class="text-lg font-semibold text-on-surface dark:text-slate-200" href="${pagesPrefix}community.html">Community</a>
-                ${user ? `<a class="text-lg font-semibold text-on-surface dark:text-slate-200" href="${pagesPrefix}dashboard.html">Dashboard</a>` : ''}
-                <hr class="border-outline-variant/30 my-2">
-                <a href="${pagesPrefix}report.html" class="flex justify-center items-center gap-2 bg-primary text-white py-3 rounded-full font-semibold shadow-md">
-                    <span class="material-symbols-outlined">add_circle</span> Report Item
+            <div class="flex items-center gap-2 mt-4">
+                <img src="${rootPrefix}assets/images/logo.png" class="h-10 w-auto" alt="KochiRetrace">
+                <span class="text-lg font-extrabold text-primary">KochiRetrace</span>
+            </div>
+            <div class="flex flex-col gap-3 mt-4 text-sm">
+                <a class="font-semibold text-slate-800 py-2 border-b border-slate-100 flex items-center gap-2" href="${rootPrefix}index.html">
+                    <span class="material-symbols-outlined text-primary text-lg">home</span> Home
                 </a>
+                <a class="font-semibold text-slate-800 py-2 border-b border-slate-100 flex items-center gap-2" href="${pagesPrefix}browse.html">
+                    <span class="material-symbols-outlined text-primary text-lg">search</span> Browse Lost & Found
+                </a>
+                <a class="font-semibold text-slate-800 py-2 border-b border-slate-100 flex items-center gap-2" href="${pagesPrefix}localities.html">
+                    <span class="material-symbols-outlined text-primary text-lg">location_on</span> Ernakulam Localities
+                </a>
+                <a class="font-semibold text-slate-800 py-2 border-b border-slate-100 flex items-center gap-2" href="${pagesPrefix}guides.html">
+                    <span class="material-symbols-outlined text-primary text-lg">menu_book</span> Guides & Help Center
+                </a>
+                <a class="font-semibold text-slate-800 py-2 border-b border-slate-100 flex items-center gap-2" href="${pagesPrefix}map.html">
+                    <span class="material-symbols-outlined text-primary text-lg">map</span> Live Map
+                </a>
+                <a class="font-semibold text-slate-800 py-2 border-b border-slate-100 flex items-center gap-2" href="${pagesPrefix}community.html">
+                    <span class="material-symbols-outlined text-primary text-lg">groups</span> Community Stories
+                </a>
+                <a class="font-semibold text-slate-800 py-2 border-b border-slate-100 flex items-center gap-2" href="${pagesPrefix}faq.html">
+                    <span class="material-symbols-outlined text-primary text-lg">help_outline</span> FAQ & Safety
+                </a>
+                ${user ? `
+                <a class="font-semibold text-slate-800 py-2 border-b border-slate-100 flex items-center gap-2" href="${pagesPrefix}dashboard.html">
+                    <span class="material-symbols-outlined text-primary text-lg">dashboard</span> My Dashboard
+                </a>` : ''}
+                
+                <div class="mt-4 pt-2">
+                    <a href="${pagesPrefix}report.html" class="flex justify-center items-center gap-2 bg-primary text-white py-3 rounded-full font-bold shadow-md text-sm">
+                        <span class="material-symbols-outlined text-base">add_circle</span> Report Lost or Found Item
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -209,37 +236,56 @@ function renderFooter(rootPrefix, pagesPrefix) {
     const footerEl = document.getElementById('global-footer') || document.querySelector('footer');
     if (!footerEl) return;
 
-    footerEl.className = "bg-slate-950 dark:bg-slate-950 text-slate-400 py-16 w-full";
+    footerEl.className = "bg-slate-950 text-slate-300 py-16 w-full border-t border-slate-800";
     footerEl.innerHTML = `
-    <div class="w-full px-6 md:px-10 max-w-[1280px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-12">
-        <div class="space-y-6">
-            <div class="flex items-center">
-                <img src="${rootPrefix}assets/images/logo.png" class="h-16 w-auto object-contain bg-white rounded-xl p-1.5 shadow-sm" alt="KochiRetrace Logo">
+    <div class="w-full px-4 md:px-8 max-w-[1280px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-10">
+        <div class="space-y-4 md:col-span-1">
+            <div class="flex items-center gap-3">
+                <img src="${rootPrefix}assets/images/logo.png" class="h-14 w-auto object-contain bg-white rounded-xl p-1.5 shadow-sm" alt="KochiRetrace Logo">
+                <span class="text-xl font-extrabold text-white">KochiRetrace</span>
             </div>
-            <p class="text-sm max-w-sm">
-                Empowering the people of Ernakulam to find what they've lost and return what they've found. Community trust in action.
+            <p class="text-xs text-slate-400 leading-relaxed">
+                Official Community Portal for Lost and Found Items in Ernakulam and Greater Kochi, Kerala. Empowering citizens to reunite with lost documents, phones, keys, and valuables.
             </p>
-            <div class="text-xs opacity-60">
-                © 2026 KochiRetrace. Serving the Greater Ernakulam Community.
+            <div class="text-[11px] text-slate-500 pt-2">
+                © 2026 KochiRetrace. Serving Ernakulam, Kakkanad, Edappally, MG Road, Fort Kochi, Vyttila &amp; Aluva.
             </div>
         </div>
-        <div class="grid grid-cols-2 gap-8">
-            <div class="space-y-4">
-                <h4 class="text-primary-fixed font-bold text-sm uppercase tracking-wider">Emergency</h4>
-                <ul class="space-y-2 text-xs">
-                    <li><a class="hover:text-white transition-all" href="#">Police Helpline: 112</a></li>
-                    <li><a class="hover:text-white transition-all" href="#">Fire Force: 101</a></li>
-                    <li><a class="hover:text-white transition-all" href="#">Metro Lost Property</a></li>
-                </ul>
-            </div>
-            <div class="space-y-4">
-                <h4 class="text-primary-fixed font-bold text-sm uppercase tracking-wider">Resources</h4>
-                <ul class="space-y-2 text-xs">
-                    <li><a class="hover:text-white transition-all" href="${pagesPrefix}browse.html">Browse Listings</a></li>
-                    <li><a class="hover:text-white transition-all" href="${pagesPrefix}map.html">Interactive Map</a></li>
-                    <li><a class="hover:text-white transition-all" href="${pagesPrefix}community.html">Success Stories</a></li>
-                </ul>
-            </div>
+
+        <div class="space-y-3">
+            <h4 class="text-primary-fixed font-bold text-xs uppercase tracking-wider text-blue-400">Popular Localities</h4>
+            <ul class="space-y-1.5 text-xs text-slate-400">
+                <li><a class="hover:text-white transition-all flex items-center gap-1.5" href="${pagesPrefix}browse.html?locality=Marine%20Drive"><span class="material-symbols-outlined text-[14px]">place</span> Marine Drive &amp; MG Road</a></li>
+                <li><a class="hover:text-white transition-all flex items-center gap-1.5" href="${pagesPrefix}browse.html?locality=Lulu%20Mall,%20Edappally"><span class="material-symbols-outlined text-[14px]">place</span> Lulu Mall &amp; Edappally</a></li>
+                <li><a class="hover:text-white transition-all flex items-center gap-1.5" href="${pagesPrefix}browse.html?locality=Kakkanad%20(Infopark)"><span class="material-symbols-outlined text-[14px]">place</span> Kakkanad &amp; Infopark</a></li>
+                <li><a class="hover:text-white transition-all flex items-center gap-1.5" href="${pagesPrefix}browse.html?locality=Vyttila%20Hub"><span class="material-symbols-outlined text-[14px]">place</span> Vyttila Mobility Hub</a></li>
+                <li><a class="hover:text-white transition-all flex items-center gap-1.5" href="${pagesPrefix}browse.html?locality=Fort%20Kochi"><span class="material-symbols-outlined text-[14px]">place</span> Fort Kochi &amp; Mattancherry</a></li>
+                <li><a class="hover:text-white transition-all font-semibold text-primary-fixed pt-1 inline-block" href="${pagesPrefix}localities.html">View All Ernakulam Areas →</a></li>
+            </ul>
+        </div>
+
+        <div class="space-y-3">
+            <h4 class="text-primary-fixed font-bold text-xs uppercase tracking-wider text-blue-400">Help &amp; Guides</h4>
+            <ul class="space-y-1.5 text-xs text-slate-400">
+                <li><a class="hover:text-white transition-all" href="${pagesPrefix}guides.html#lost-phone">Lost Phone in Kochi Guide</a></li>
+                <li><a class="hover:text-white transition-all" href="${pagesPrefix}guides.html#lost-aadhaar">Lost Aadhaar &amp; ID Recovery</a></li>
+                <li><a class="hover:text-white transition-all" href="${pagesPrefix}guides.html#lost-passport">Lost Passport Emergency Steps</a></li>
+                <li><a class="hover:text-white transition-all" href="${pagesPrefix}faq.html">Frequently Asked Questions</a></li>
+                <li><a class="hover:text-white transition-all" href="${pagesPrefix}community.html">Success Stories &amp; Trust</a></li>
+                <li><a class="hover:text-white transition-all" href="${pagesPrefix}contact.html">Contact Support Team</a></li>
+            </ul>
+        </div>
+
+        <div class="space-y-3">
+            <h4 class="text-primary-fixed font-bold text-xs uppercase tracking-wider text-blue-400">Legal &amp; Emergency</h4>
+            <ul class="space-y-1.5 text-xs text-slate-400">
+                <li><a class="hover:text-white transition-all" href="${pagesPrefix}about.html">About KochiRetrace</a></li>
+                <li><a class="hover:text-white transition-all" href="${pagesPrefix}privacy.html">Privacy Policy</a></li>
+                <li><a class="hover:text-white transition-all" href="${pagesPrefix}terms.html">Terms of Service</a></li>
+                <li class="pt-2 font-semibold text-slate-300">Emergency Numbers:</li>
+                <li class="text-[11px] text-slate-400">Kochi City Police: 112 / 0484 2394700</li>
+                <li class="text-[11px] text-slate-400">Kochi Metro Lost Property: 1800 425 0355</li>
+            </ul>
         </div>
     </div>
     `;
@@ -368,3 +414,54 @@ function showToast(text, type = 'success') {
 
 window.showToast = showToast;
 window.formatTimeAgo = formatTimeAgo;
+
+// --- Global Image Lightbox ---
+function openLightbox(src, caption = '') {
+    // Remove any existing lightbox
+    const existing = document.getElementById('kr-lightbox');
+    if (existing) existing.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = 'kr-lightbox';
+    overlay.style.cssText = `
+        position:fixed;inset:0;z-index:99999;
+        background:rgba(0,0,0,0.92);
+        display:flex;flex-direction:column;
+        align-items:center;justify-content:center;
+        cursor:zoom-out;
+        animation:krLbFadeIn .18s ease;
+    `;
+
+    overlay.innerHTML = `
+        <style>
+            @keyframes krLbFadeIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+            #kr-lightbox img{max-width:92vw;max-height:82vh;border-radius:12px;box-shadow:0 24px 80px rgba(0,0,0,.7);object-fit:contain;}
+        </style>
+        <button id="kr-lb-close" style="position:absolute;top:18px;right:22px;background:rgba(255,255,255,.12);border:none;color:#fff;width:40px;height:40px;border-radius:50%;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;" title="Close">✕</button>
+        <img src="${src}" alt="${caption}" draggable="false">
+        ${caption ? `<p style="color:rgba(255,255,255,.65);margin-top:14px;font-size:13px;text-align:center;max-width:520px;padding:0 16px;">${caption}</p>` : ''}
+    `;
+
+    document.body.appendChild(overlay);
+    document.body.style.overflow = 'hidden';
+
+    const close = () => {
+        overlay.style.opacity = '0';
+        overlay.style.transition = 'opacity .15s';
+        setTimeout(() => { overlay.remove(); document.body.style.overflow = ''; }, 150);
+    };
+
+    overlay.addEventListener('click', close);
+    document.getElementById('kr-lb-close').addEventListener('click', e => { e.stopPropagation(); close(); });
+    document.addEventListener('keydown', function esc(e) {
+        if (e.key === 'Escape') { close(); document.removeEventListener('keydown', esc); }
+    });
+}
+
+// Wire up lightbox on any img with data-lightbox attribute (works globally)
+document.addEventListener('click', e => {
+    const img = e.target.closest('img[data-lightbox]');
+    if (img) openLightbox(img.src, img.getAttribute('data-lightbox-caption') || img.alt || '');
+});
+
+window.openLightbox = openLightbox;

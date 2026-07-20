@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About KochiRetrace | Community Lost &amp; Found Portal Ernakulam</title>
+    <meta name="description" content="Learn about KochiRetrace, the community-driven lost and found initiative serving Ernakulam and Greater Kochi, Kerala. Our mission is reuniting people with lost valuables safely.">
+    <meta name="keywords" content="About KochiRetrace, Lost and found initiative Kochi, Ernakulam community portal, Lost property Kerala">
+    <link rel="canonical" href="https://kochiretrace.netlify.app/pages/about.html">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://kochiretrace.netlify.app/pages/about.html">
+    <meta property="og:title" content="About KochiRetrace | Community Lost & Found Portal Ernakulam">
+    <meta property="og:description" content="Reuniting lost items with their rightful owners across Ernakulam district. Community trust in action.">
+    <meta property="og:image" content="https://kochiretrace.netlify.app/assets/images/logo.png">
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Atkinson+Hyperlegible+Next:wght@400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        try {
+            tailwind.config = {
+                darkMode: "class",
+                theme: {
+                    extend: {
+                        colors: {
+                            "primary": "#003e7a",
+                            "primary-container": "#0055a4",
+                            "secondary": "#1b6d24",
+                            "background": "#f8f9ff"
+                        }
+                    }
+                }
+            };
+        } catch(e){}
+    </script>
+
+    <!-- Structured Data: Organization & BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://kochiretrace.netlify.app/"
+          },{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "About Us",
+            "item": "https://kochiretrace.netlify.app/pages/about.html"
+          }]
+        },
+        {
+          "@type": "Organization",
+          "name": "KochiRetrace",
+          "url": "https://kochiretrace.netlify.app/",
+          "logo": "https://kochiretrace.netlify.app/assets/images/logo.png",
+          "description": "Ernakulam District Lost and Found Community Portal",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Kochi",
+            "addressRegion": "Kerala",
+            "addressCountry": "IN"
+          }
+        }
+      ]
+    }
+    </script>
+</head>
+<body class="bg-background text-slate-800 font-['Plus_Jakarta_Sans',sans-serif] antialiased flex flex-col min-h-screen">
+
+    <header id="global-header"></header>
+
+    <main class="flex-1 w-full max-w-[900px] mx-auto px-4 md:px-8 py-10">
+        
+        <nav aria-label="Breadcrumb" class="mb-6">
+            <ol class="flex items-center gap-2 text-xs text-slate-500">
+                <li><a href="../index.html" class="hover:text-primary transition-colors">Home</a></li>
+                <li><span class="material-symbols-outlined text-[12px]">chevron_right</span></li>
+                <li class="font-bold text-slate-800" aria-current="page">About Us</li>
+            </ol>
+        </nav>
+
+        <header class="text-center mb-12">
+            <span class="px-3.5 py-1 rounded-full bg-blue-100 text-primary font-bold text-xs uppercase tracking-wider mb-3 inline-block">Our Mission</span>
+            <h1 class="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight mb-4">
+                Reuniting Kochi, One Item at a Time
+            </h1>
+            <p class="text-slate-600 text-sm md:text-base leading-relaxed max-w-2xl mx-auto">
+                KochiRetrace was created to give the citizens of Ernakulam a transparent, fast, and secure community portal to report missing property and return lost belongings.
+            </p>
+        </header>
+
+        <section class="bg-white rounded-3xl p-8 md:p-12 border border-slate-200 shadow-sm space-y-6 text-slate-700 text-sm leading-relaxed mb-12">
+            <h2 class="text-xl font-bold text-slate-900">Why KochiRetrace?</h2>
+            <p>
+                Every day across metro stations, shopping malls like Lulu, Infopark tech campuses, and bus hubs in Vyttila or Kakkanad, citizens lose valuable items ranging from smartphones and wallets to crucial identification documents like passports and Aadhaar cards.
+            </p>
+            <p>
+                Before KochiRetrace, finding a lost item required fragmented searches across social media groups or physical police station visits. Our platform centralizes lost and found notices with geolocation mapping and real-time messaging, ensuring items return to their rightful owners.
+            </p>
+        </section>
+
+    </main>
+
+    <footer id="global-footer"></footer>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/storage.js"></script>
+    <script src="../js/shared.js"></script>
+</body>
+</html>

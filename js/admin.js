@@ -271,29 +271,75 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        itemsTbody.innerHTML = filtered.map(item => `
-            <tr class="border-b border-slate-100 dark:border-slate-800/60 hover:bg-slate-50/50 dark:hover:bg-slate-900/30">
+        itemsTbody.innerHTML = filtered.map(item => {
+            const statusClasses =
+                item.status === 'Lost'  ? 'bg-red-50 text-error border-red-200' :
+                item.status === 'Found' ? 'bg-secondary-container text-on-secondary-container border-secondary/20' :
+                'bg-emerald-50 text-emerald-800 border-emerald-200';
+            const verifiedBadge = item.verifiedByAdmin === false
+                ? `<span class="ml-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-100 text-amber-800 border border-amber-300">PENDING</span>`
+                : '';
+            return `
+            <tr class="item-row border-b border-slate-100 hover:bg-slate-50/60 transition-colors" data-item-id="${item.id}">
                 <td class="p-4 flex items-center gap-3">
-                    <img class="w-10 h-10 rounded-xl object-cover bg-slate-55 dark:bg-slate-900" src="${item.image || 'https://images.unsplash.com/photo-1595079676339-1534801ad6cf?auto=format&fit=crop&w=50&h=50&q=80'}" alt="">
-                    <span class="font-bold text-slate-900 dark:text-white truncate max-w-[150px] block" title="${item.name}">${item.name}</span>
+                    <img
+                        class="w-10 h-10 rounded-xl object-cover bg-slate-100 cursor-zoom-in hover:scale-110 transition-transform"
+                        src="${item.image || 'https://images.unsplash.com/photo-1595079676339-1534801ad6cf?auto=format&fit=crop&w=50&h=50&q=80'}"
+                        alt="${item.name}"
+                        data-lightbox
+                        data-lightbox-caption="${item.name} · ${item.locality}"
+                        title="Click to enlarge"
+                    >
+                    <span class="font-bold text-slate-900 truncate max-w-[140px] block" title="${item.name}">${item.name}</span>
                 </td>
-                <td class="p-4 text-slate-500 dark:text-slate-400">${item.category}</td>
-                <td class="p-4 text-slate-550">${item.locality}</td>
-                <td class="p-4 text-slate-550">${item.reporterName}</td>
+                <td class="p-4 text-slate-500">${item.category}</td>
+                <td class="p-4 text-slate-600">${item.locality}</td>
+                <td class="p-4 text-slate-600">${item.reporterName || '—'}</td>
                 <td class="p-4">
-                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${
-                        item.status === 'Lost' ? 'bg-red-50 text-error border-red-200' :
-                        item.status === 'Found' ? 'bg-secondary-container text-on-secondary-container border-secondary/20' :
-                        'bg-emerald-50 text-emerald-800 border-emerald-200'
-                    }">${item.status}</span>
+                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${statusClasses}">${item.status}</span>
+                    ${verifiedBadge}
                 </td>
-                <td class="p-4 text-right space-x-1.5 whitespace-nowrap">
-                    <button data-id="${item.id}" data-action="delete" class="item-action-btn p-1.5 hover:bg-red-50 dark:hover:bg-red-950/20 text-error rounded-lg" title="Delete listing">
+                <td class="p-4 text-right space-x-1 whitespace-nowrap">
+                    <button data-id="${item.id}" data-action="expand"
+                        class="item-action-btn p-1.5 hover:bg-primary/10 text-primary rounded-lg" title="View details">
+                        <span class="material-symbols-outlined text-lg">expand_more</span>
+                    </button>
+                    ${item.verifiedByAdmin === false ? `
+                    <button data-id="${item.id}" data-action="verify"
+                        class="item-action-btn p-1.5 hover:bg-emerald-50 text-emerald-700 rounded-lg" title="Approve listing">
+                        <span class="material-symbols-outlined text-lg">check_circle</span>
+                    </button>` : ''}
+                    <button data-id="${item.id}" data-action="delete"
+                        class="item-action-btn p-1.5 hover:bg-red-50 text-error rounded-lg" title="Delete listing">
                         <span class="material-symbols-outlined text-lg">delete</span>
                     </button>
                 </td>
             </tr>
-        `).join('');
+            <tr class="detail-row hidden bg-slate-50 border-b border-slate-200" id="detail-${item.id}">
+                <td colspan="6" class="px-6 py-5">
+                    <div class="flex gap-6 flex-wrap">
+                        <img
+                            src="${item.image || 'https://images.unsplash.com/photo-1595079676339-1534801ad6cf?auto=format&fit=crop&w=300&q=80'}"
+                            class="w-36 h-36 rounded-2xl object-cover flex-shrink-0 cursor-zoom-in shadow"
+                            data-lightbox
+                            data-lightbox-caption="${item.name} · ${item.locality}"
+                            alt="${item.name}"
+                        >
+                        <div class="flex-1 grid grid-cols-2 gap-x-8 gap-y-2 text-sm min-w-[240px]">
+                            <div><span class="text-slate-400 text-xs uppercase tracking-wide">Item ID</span><p class="font-mono text-xs text-slate-600 mt-0.5">${item.id}</p></div>
+                            <div><span class="text-slate-400 text-xs uppercase tracking-wide">Date Lost/Found</span><p class="font-semibold text-slate-700 mt-0.5">${item.date || '—'}</p></div>
+                            <div><span class="text-slate-400 text-xs uppercase tracking-wide">Landmark</span><p class="font-semibold text-slate-700 mt-0.5">${item.landmark || '—'}</p></div>
+                            <div><span class="text-slate-400 text-xs uppercase tracking-wide">Reporter</span><p class="font-semibold text-slate-700 mt-0.5">${item.reporterName || '—'}</p></div>
+                            <div><span class="text-slate-400 text-xs uppercase tracking-wide">Contact Phone</span><p class="font-semibold text-slate-700 mt-0.5">${item.phone || '—'}</p></div>
+                            <div><span class="text-slate-400 text-xs uppercase tracking-wide">Contact Email</span><p class="font-semibold text-slate-700 mt-0.5">${item.email || '—'}</p></div>
+                            <div class="col-span-2"><span class="text-slate-400 text-xs uppercase tracking-wide">Description</span><p class="text-slate-700 mt-0.5 leading-relaxed">${item.description || '—'}</p></div>
+                            <div><span class="text-slate-400 text-xs uppercase tracking-wide">Status</span><p class="font-semibold mt-0.5">${item.status}</p></div>
+                            <div><span class="text-slate-400 text-xs uppercase tracking-wide">Admin Verified</span><p class="font-semibold mt-0.5 ${item.verifiedByAdmin === false ? 'text-amber-600' : 'text-emerald-600'}">${item.verifiedByAdmin === false ? '⏳ Pending' : '✅ Approved'}</p></div>
+                        </div>
+                    </div>
+                </td>
+            </tr>`;
+        }).join('');
     }
 
     if (itemsTbody) {
@@ -304,16 +350,32 @@ document.addEventListener('DOMContentLoaded', () => {
             const id = btn.getAttribute('data-id');
             const action = btn.getAttribute('data-action');
 
-            if (action === 'delete') {
-                if (confirm("Delete this listing permanently?")) {
+            if (action === 'expand') {
+                const detailRow = document.getElementById(`detail-${id}`);
+                const icon = btn.querySelector('.material-symbols-outlined');
+                if (detailRow) {
+                    detailRow.classList.toggle('hidden');
+                    icon.textContent = detailRow.classList.contains('hidden') ? 'expand_more' : 'expand_less';
+                    btn.title = detailRow.classList.contains('hidden') ? 'View details' : 'Hide details';
+                }
+            } else if (action === 'verify') {
+                window.Storage.updateItem(id, { verifiedByAdmin: true });
+                window.Storage.addAuditLog('Item Approved', `Admin approved listing ID: ${id}`);
+                window.showToast('Listing approved and published! ✅');
+                renderItems();
+                updateSidebarBadges();
+            } else if (action === 'delete') {
+                if (confirm('Delete this listing permanently?')) {
                     window.Storage.deleteItem(id);
                     window.Storage.addAuditLog('Item Deleted', `Deleted item ID: ${id}`);
-                    window.showToast("Listing deleted");
+                    window.showToast('Listing deleted');
                     renderItems();
+                    updateSidebarBadges();
                 }
             }
         });
     }
+
 
     // 7. RENDER: CLAIMS MANAGEMENT
     const claimsTbody = document.getElementById('claims-tbody');

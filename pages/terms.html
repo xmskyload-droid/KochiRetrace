@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service &amp; Community Guidelines | KochiRetrace</title>
+    <meta name="description" content="Terms of service and community guidelines for posting and claiming lost property on KochiRetrace in Ernakulam.">
+    <link rel="canonical" href="https://kochiretrace.netlify.app/pages/terms.html">
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script id="tailwind-config">
+        try {
+            tailwind.config = {
+                darkMode: "class",
+                theme: { extend: { colors: { "primary": "#003e7a", "background": "#f8f9ff" } } }
+            };
+        } catch(e){}
+    </script>
+</head>
+<body class="bg-background text-slate-800 font-['Plus_Jakarta_Sans',sans-serif] antialiased flex flex-col min-h-screen">
+
+    <header id="global-header"></header>
+
+    <main class="flex-1 w-full max-w-[850px] mx-auto px-4 md:px-8 py-10">
+        <h1 class="text-3xl font-extrabold text-slate-900 mb-6">Terms of Service &amp; Community Guidelines</h1>
+        <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-6 text-sm text-slate-600 leading-relaxed">
+            <p><strong>Effective Date:</strong> July 21, 2026</p>
+            <h2 class="text-lg font-bold text-slate-900">1. Honest Reporting Required</h2>
+            <p>Users must submit accurate information regarding lost or found property. Fraudulent claims, fake listings, or attempts to extort money for returning property will result in immediate permanent suspension and referral to Kochi City Police authorities.</p>
+
+            <h2 class="text-lg font-bold text-slate-900">2. Verification Procedures</h2>
+            <p>Claimants must provide verifiable proof of ownership before receiving property. Finders are required to exercise reasonable diligence in confirming identity.</p>
+
+            <h2 class="text-lg font-bold text-slate-900">3. Moderation &amp; Approval</h2>
+            <p>KochiRetrace administrators reserve the right to review, edit, or remove any listing that violates community guidelines or public safety policies.</p>
+        </div>
+    </main>
+
+    <footer id="global-footer"></footer>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/storage.js"></script>
+    <script src="../js/shared.js"></script>
+</body>
+</html>

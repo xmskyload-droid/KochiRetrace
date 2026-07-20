@@ -1,6 +1,5 @@
-# Firebase configuration (contains project credentials — never commit this)
-# Copy js/config.example.js → js/config.js and fill in your Firebase values.
-js/config.js
+﻿# Firebase configuration (contains project credentials â€” never commit this)
+# Copy js/config.example.js â†’ js/config.js and fill in your Firebase values.
 
 # OS / Editor files
 .DS_Store
@@ -16,3 +15,4 @@ npm-debug.log*
 
 # Firebase emulator data
 .firebase/
+

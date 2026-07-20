@@ -211,6 +211,7 @@ const Storage = (() => {
                 return auth.signInWithEmailAndPassword(email, password)
                     .then(cred => {
                         return db.collection("users").doc(cred.user.uid).get().then(doc => {
+                            const isAdmin = email === 'abhishekvp9746@gmail.com';
                             if (doc.exists) {
                                 const user = doc.data();
                                 if (user.status === 'Suspended' || user.status === 'Banned') {
@@ -223,12 +224,26 @@ const Storage = (() => {
                                     name: user.name, 
                                     email: user.email, 
                                     avatar: user.avatar,
-                                    isAdmin: !!user.isAdmin 
+                                    isAdmin: !!user.isAdmin || isAdmin
                                 };
                                 save(KEYS.SESSION, sessionUser);
                                 return sessionUser;
+                            } else {
+                                // Self-healing: document missing in Firestore, create doc automatically
+                                const newUser = {
+                                    id: cred.user.uid,
+                                    name: email.split('@')[0],
+                                    email: email,
+                                    status: 'Active',
+                                    isAdmin: isAdmin,
+                                    avatar: window.Config.PLACEHOLDERS.USER_AVATAR
+                                };
+                                return db.collection("users").doc(newUser.id).set(newUser).then(() => {
+                                    const sessionUser = { id: newUser.id, name: newUser.name, email: newUser.email, avatar: newUser.avatar, isAdmin: isAdmin };
+                                    save(KEYS.SESSION, sessionUser);
+                                    return sessionUser;
+                                });
                             }
-                            return null;
                         });
                     }).catch(err => {
                         console.error("Firebase Login failed:", err);
@@ -285,6 +300,10 @@ const Storage = (() => {
                         });
                     }).catch(err => {
                         console.error("Firebase Registration failed:", err);
+                        if (err && (err.code === 'auth/email-already-in-use' || err.message.includes('already in use'))) {
+                            // Self-heal: Email already registered in Firebase Auth, automatically attempt login!
+                            return this.login(email, password);
+                        }
                         return null;
                     });
             } else {

@@ -28,17 +28,17 @@ function protectRoutes(pagesPrefix) {
     if (protectedPaths.includes(currentFile)) {
         const user = window.Storage ? window.Storage.getUser() : null;
         if (!user) {
-            alert("Access Denied: Please sign in to view this page.");
-            window.location.href = `${pagesPrefix}login.html`;
+            if (window.showToast) window.showToast('Please sign in to view this page.', 'error');
+            setTimeout(() => { window.location.href = `${pagesPrefix}login.html`; }, 800);
         }
     }
 
     if (currentFile === 'admin.html') {
         const user = window.Storage ? window.Storage.getUser() : null;
         if (!user || !user.isAdmin) {
-            alert("Access Denied: Administrator privileges required.");
+            if (window.showToast) window.showToast('Administrator privileges required.', 'error');
             const redirectPath = window.location.pathname.includes('/pages/') ? '../index.html' : 'index.html';
-            window.location.href = redirectPath;
+            setTimeout(() => { window.location.href = redirectPath; }, 800);
         }
     }
 }

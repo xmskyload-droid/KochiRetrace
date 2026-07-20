@@ -70,71 +70,54 @@ const Storage = (() => {
 
     initDatabase();
 
-    // --- FIREBASE DETECTOR ---
+    // --- FIREBASE INITIALIZER (safe: prevents duplicate app instances) ---
     let useFirebase = false;
     let db, auth;
 
     if (window.Config && window.Config.FIREBASE && window.Config.FIREBASE.apiKey && typeof firebase !== 'undefined') {
         try {
-            firebase.initializeApp(window.Config.FIREBASE);
-            db = firebase.firestore();
-            auth = firebase.auth();
+            // Guard: only initialize if no app exists yet
+            const existingApp = firebase.apps && firebase.apps.length > 0 ? firebase.apps[0] : null;
+            const app = existingApp || firebase.initializeApp(window.Config.FIREBASE);
+            db   = firebase.firestore(app);
+            auth = firebase.auth(app);
             useFirebase = true;
-            console.log("KochiRetrace: Connected successfully to real-time Cloud Firebase backend.");
-            
-            // Start Realtime snapshot listeners to keep local cache synchronized dynamically
-            db.collection("items").onSnapshot(snapshot => {
-                const list = [];
-                snapshot.forEach(doc => list.push({ id: doc.id, ...doc.data() }));
-                save(KEYS.ITEMS, list);
-            });
+            console.log('%cKochiRetrace ✅ Firebase connected', 'color:green;font-weight:bold');
 
-            db.collection("users").onSnapshot(snapshot => {
-                const list = [];
-                snapshot.forEach(doc => list.push({ id: doc.id, ...doc.data() }));
-                save(KEYS.USERS, list);
-            });
+            // Helper to attach a safe onSnapshot listener
+            function liveSync(collectionName, key) {
+                db.collection(collectionName).onSnapshot(
+                    snapshot => {
+                        const list = [];
+                        snapshot.forEach(doc => list.push({ id: doc.id, ...doc.data() }));
+                        save(key, list);
+                    },
+                    err => console.warn(`Firestore onSnapshot error [${collectionName}]:`, err.message)
+                );
+            }
 
-            db.collection("claims").onSnapshot(snapshot => {
-                const list = [];
-                snapshot.forEach(doc => list.push({ id: doc.id, ...doc.data() }));
-                save(KEYS.CLAIMS, list);
-            });
+            liveSync('items',         KEYS.ITEMS);
+            liveSync('users',         KEYS.USERS);
+            liveSync('claims',        KEYS.CLAIMS);
+            liveSync('stories',       KEYS.STORIES);
+            liveSync('messages',      KEYS.MESSAGES);
+            liveSync('notifications', KEYS.NOTIFICATIONS);
+            liveSync('audit_logs',    KEYS.AUDIT_LOGS);
 
-            db.collection("stories").onSnapshot(snapshot => {
-                const list = [];
-                snapshot.forEach(doc => list.push({ id: doc.id, ...doc.data() }));
-                save(KEYS.STORIES, list);
-            });
+            // Settings (single doc, not a collection)
+            db.collection('settings').doc('global').onSnapshot(
+                doc => { if (doc.exists) save(KEYS.SETTINGS, doc.data()); },
+                err => console.warn('Firestore onSnapshot error [settings]:', err.message)
+            );
 
-            db.collection("messages").onSnapshot(snapshot => {
-                const list = [];
-                snapshot.forEach(doc => list.push({ id: doc.id, ...doc.data() }));
-                save(KEYS.MESSAGES, list);
-            });
-
-            db.collection("notifications").onSnapshot(snapshot => {
-                const list = [];
-                snapshot.forEach(doc => list.push({ id: doc.id, ...doc.data() }));
-                save(KEYS.NOTIFICATIONS, list);
-            });
-
-            db.collection("audit_logs").onSnapshot(snapshot => {
-                const list = [];
-                snapshot.forEach(doc => list.push({ id: doc.id, ...doc.data() }));
-                save(KEYS.AUDIT_LOGS, list);
-            });
-
-            db.collection("settings").doc("global").onSnapshot(doc => {
-                if (doc.exists) {
-                    save(KEYS.SETTINGS, doc.data());
-                }
-            });
         } catch (err) {
-            console.error("Firebase Initialization Error. Falling back to LocalStorage:", err);
+            console.error('Firebase init failed — falling back to LocalStorage:', err.message);
             useFirebase = false;
         }
+    } else {
+        console.log('KochiRetrace: running in offline/localStorage mode.');
     }
+
 
     return {
         // --- ITEMS API ---

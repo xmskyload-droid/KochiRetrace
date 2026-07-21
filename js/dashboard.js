@@ -369,6 +369,9 @@ document.addEventListener('DOMContentLoaded', () => {
         renderNotifications();
     }
 
+    // Listen for realtime multi-device sync updates from Firestore
+    window.addEventListener('storage-updated', renderAll);
+
     // Initial Load
     renderAll();
 });

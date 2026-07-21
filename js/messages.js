@@ -605,6 +605,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // Listen for realtime multi-device sync updates from Firestore
+    window.addEventListener('storage-updated', () => {
+        renderChatList();
+        renderActiveChat();
+    });
+
     // Initial Load
     renderChatList();
     renderActiveChat();

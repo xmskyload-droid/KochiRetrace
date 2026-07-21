@@ -483,19 +483,22 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             // Save Claim
-            window.Storage.createClaim(claimData);
+            const newClaim = window.Storage.createClaim(claimData);
 
             // Close modal
             claimModal.classList.add('hidden');
             document.body.classList.remove('overflow-hidden');
 
-            window.showToast("Claim request submitted successfully!");
+            window.showToast("Claim request submitted! Redirecting to Recovery Workspace...");
             
             // Reset form
             claimForm.reset();
 
-            // Refresh cards
+            // Refresh cards & redirect to Recovery Workspace
             filterAndRender();
+            setTimeout(() => {
+                window.location.href = `messages.html?claimId=${newClaim.id}`;
+            }, 800);
         });
     }
 

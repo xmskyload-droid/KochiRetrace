@@ -98,6 +98,7 @@ const Storage = (() => {
                         const list = [];
                         snapshot.forEach(doc => list.push({ id: doc.id, ...doc.data() }));
                         save(key, list);
+                        window.dispatchEvent(new CustomEvent('storage-updated', { detail: { key, collectionName } }));
                     },
                     err => _warn(`Firestore listener [${collectionName}]:`, err.message)
                 );
@@ -524,10 +525,12 @@ const Storage = (() => {
         },
 
         createClaim(claimData) {
+            const item = this.getItems(true).find(i => i.id === claimData.itemId);
             const claim = {
                 id: generateId('claim'),
                 itemId: claimData.itemId,
                 itemName: claimData.itemName,
+                reporterId: item ? item.reporterId : null,
                 claimerId: claimData.claimerId,
                 claimerName: claimData.claimerName,
                 reason: claimData.reason,
@@ -551,7 +554,6 @@ const Storage = (() => {
             }
 
             // Create notification for item reporter
-            const item = this.getItems(true).find(i => i.id === claimData.itemId);
             if (item) {
                 this.addNotification(
                     item.reporterId,

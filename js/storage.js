@@ -606,7 +606,7 @@ const Storage = (() => {
             save(KEYS.NOTIFICATIONS, all);
         },
 
-        // --- MESSAGES API ---
+        // --- MESSAGES & RECOVERY WORKSPACE API ---
         getMessages(chatId) {
             const all = load(KEYS.MESSAGES);
             if (chatId) {
@@ -615,14 +615,76 @@ const Storage = (() => {
             return all;
         },
 
-        sendMessage(chatId, senderId, text, itemName) {
+        getChatRooms(userId) {
+            const claims = this.getClaims();
+            const items = this.getItems(true);
+            const user = this.getUser();
+            const uid = userId || (user ? user.id : null);
+            if (!uid) return [];
+
+            const rooms = [];
+
+            claims.forEach(claim => {
+                const item = items.find(i => i.id === claim.itemId);
+                const reporterId = item ? item.reporterId : null;
+                const reporterName = item ? item.reporterName : 'Reporter';
+
+                // User is involved if they are either claimer or item reporter
+                if (claim.claimerId === uid || reporterId === uid) {
+                    const isReporter = reporterId === uid;
+                    const isItemLost = item ? (item.status === 'Lost' || (item.description && item.description.toLowerCase().includes('lost'))) : true;
+
+                    const ownerName = isItemLost ? reporterName : claim.claimerName;
+                    const finderName = isItemLost ? claim.claimerName : reporterName;
+
+                    const userRole = (isItemLost && isReporter) || (!isItemLost && !isReporter) ? 'Owner' : 'Finder';
+                    const counterpartName = isReporter ? claim.claimerName : reporterName;
+                    const counterpartRole = userRole === 'Owner' ? 'Finder' : 'Owner';
+
+                    const refCode = `KR-2026-${claim.id.slice(-4).toUpperCase()}`;
+
+                    const messages = this.getMessages(claim.id);
+                    const lastMsg = messages[messages.length - 1] || null;
+                    const unreadCount = messages.filter(m => m.senderId !== uid && !m.read).length;
+
+                    rooms.push({
+                        roomId: claim.id,
+                        claimId: claim.id,
+                        itemId: claim.itemId,
+                        itemName: claim.itemName || (item ? item.name : 'Lost Item'),
+                        itemStatus: item ? item.status : 'Lost',
+                        locality: item ? item.locality : 'Kochi',
+                        referenceCode: refCode,
+                        ownerName,
+                        finderName,
+                        userRole,
+                        counterpartName,
+                        counterpartRole,
+                        status: claim.status, // 'Claim Requested', 'Verified', 'Returned', 'Declined'
+                        claimReason: claim.reason,
+                        claimPhone: claim.phone,
+                        claimEmail: claim.email,
+                        unreadCount,
+                        lastMsg
+                    });
+                }
+            });
+
+            return rooms;
+        },
+
+        sendMessage(chatId, senderId, text, itemName, extra = {}) {
             const msg = {
                 id: generateId('msg'),
                 chatId,
                 senderId,
                 text,
                 timestamp: Date.now(),
-                itemName
+                itemName,
+                image: extra.image || null,
+                location: extra.location || null,
+                read: false,
+                statusTicks: 'delivered'
             };
 
             // Local save
@@ -635,6 +697,43 @@ const Storage = (() => {
                 db.collection("messages").doc(msg.id).set(msg).catch(e => _err("Cloud message send failed:", e));
             }
             return msg;
+        },
+
+        markMessagesRead(chatId, userId) {
+            const messages = load(KEYS.MESSAGES);
+            let updated = false;
+            messages.forEach(m => {
+                if (m.chatId === chatId && m.senderId !== userId && !m.read) {
+                    m.read = true;
+                    m.statusTicks = 'read';
+                    updated = true;
+                }
+            });
+            if (updated) save(KEYS.MESSAGES, messages);
+        },
+
+        completeRecovery(claimId, rating = 5, feedback = '') {
+            const claims = this.getClaims();
+            const claim = claims.find(c => c.id === claimId);
+            if (!claim) return null;
+
+            this.updateClaim(claimId, 'Returned');
+            this.updateItem(claim.itemId, { status: 'Returned' });
+
+            // Create story / feedback entry
+            const user = this.getUser();
+            if (user) {
+                this.saveStory({
+                    authorName: user.name,
+                    title: `Recovered: ${claim.itemName}`,
+                    content: feedback || `Successfully recovered ${claim.itemName} in Kochi thanks to KochiRetrace!`,
+                    rating: rating,
+                    verifiedByAdmin: true
+                });
+            }
+
+            this.addAuditLog('Item Returned', `Item ${claim.itemName} marked as returned for claim ${claimId}`);
+            return claim;
         },
 
         // --- STORIES API ---

@@ -116,70 +116,115 @@
 <header id="global-header"></header>
 
 <!-- Main Messages Area -->
-<main class="flex-grow max-w-[1280px] mx-auto px-6 md:px-10 py-8 w-full h-[calc(100vh-80px)] min-h-[500px]">
-    <div class="flex gap-6 bg-white dark:bg-slate-900 rounded-3xl h-full shadow-[0px_4px_24px_rgba(0,85,164,0.04)] border border-slate-200 dark:border-slate-800 overflow-hidden">
+<main class="flex-grow max-w-[1280px] mx-auto px-4 md:px-8 py-6 w-full h-[calc(100vh-80px)] min-h-[500px]">
+    <div class="flex gap-4 md:gap-6 bg-white dark:bg-slate-900 rounded-3xl h-full shadow-[0px_4px_24px_rgba(0,85,164,0.04)] border border-slate-200 dark:border-slate-800 overflow-hidden">
         
-        <!-- Sidebar Panel: Active Chats list -->
+        <!-- Sidebar Panel: Active Claims list -->
         <aside id="chat-aside-panel" class="w-full md:w-80 lg:w-96 flex flex-col border-r border-slate-250 dark:border-slate-800/80">
-            <div class="p-6 border-b border-slate-250 dark:border-slate-800/80">
-                <h2 class="text-xl font-bold text-primary dark:text-primary-fixed mb-4">Messages</h2>
+            <div class="p-5 border-b border-slate-250 dark:border-slate-800/80 bg-slate-50/50">
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-lg font-bold text-primary dark:text-primary-fixed flex items-center gap-2">
+                        <span class="material-symbols-outlined text-xl">verified</span> Recovery Workspaces
+                    </h2>
+                </div>
                 <div class="relative">
-                    <input id="search-chats" class="w-full bg-slate-100 dark:bg-slate-800/60 rounded-xl py-2.5 pl-10 pr-4 border-none focus:ring-2 focus:ring-primary text-sm outline-none" placeholder="Search chats..." type="text">
-                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+                    <input id="search-chats" class="w-full bg-white dark:bg-slate-800 rounded-xl py-2 pl-9 pr-3 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-primary text-xs outline-none" placeholder="Search item, reference code..." type="text">
+                    <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-base">search</span>
                 </div>
             </div>
             <div id="chat-list" class="flex-1 overflow-y-auto">
-                <!-- Chat list dynamically loaded -->
+                <!-- Dynamic Claim Workspaces render here -->
             </div>
         </aside>
 
-        <!-- Right Side Panel: Chat Thread -->
+        <!-- Right Side Panel: Active Claim Workspace -->
         <section id="chat-thread-panel" class="hidden md:flex flex-grow flex-col relative h-full w-full">
-            <!-- Chat Header -->
-            <header class="p-4 border-b border-slate-250 dark:border-slate-800/80 flex items-center justify-between bg-white dark:bg-slate-900">
-                <div class="flex items-center gap-3">
-                    <button id="back-to-chats-btn" class="md:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-full flex items-center justify-center" aria-label="Back to messages list">
+            <!-- Workspace Header -->
+            <header class="p-3 md:p-4 border-b border-slate-250 dark:border-slate-800/80 flex items-center justify-between bg-white dark:bg-slate-900 shadow-sm z-10">
+                <div class="flex items-center gap-3 min-w-0">
+                    <button id="back-to-chats-btn" class="md:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-full flex items-center justify-center" aria-label="Back to workspaces">
                         <span class="material-symbols-outlined text-xl">arrow_back</span>
                     </button>
-                    <div class="w-11 h-11 rounded-full overflow-hidden border-2 border-primary-fixed flex-shrink-0">
-                        <img id="chat-header-avatar" class="w-full h-full object-cover" src="" alt="Active contact avatar">
+                    <div class="w-10 h-10 rounded-2xl bg-primary-container/20 text-primary border border-primary/20 flex items-center justify-center flex-shrink-0">
+                        <span id="chat-header-icon" class="material-symbols-outlined text-xl">inventory_2</span>
                     </div>
                     <div class="min-w-0">
-                        <h2 id="chat-header-name" class="text-sm font-bold text-slate-900 dark:text-white leading-snug truncate">Name</h2>
-                        <p id="chat-header-item" class="text-[10px] text-primary dark:text-primary-fixed font-bold flex items-center gap-1 mt-0.5 truncate">
-                            Item Details Link
+                        <div class="flex items-center gap-2">
+                            <h2 id="chat-header-name" class="text-sm font-extrabold text-slate-900 dark:text-white truncate">Item Recovery Workspace</h2>
+                            <span id="chat-header-status-badge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">Pending</span>
+                        </div>
+                        <p id="chat-header-item" class="text-[11px] text-slate-500 dark:text-slate-400 font-medium flex items-center gap-2 mt-0.5 truncate">
+                            <span>Ref: KR-2026-0000</span> • <span id="chat-header-roles">Owner: -- | Finder: --</span>
                         </p>
                     </div>
                 </div>
-                <div class="flex gap-1.5 flex-shrink-0">
-                    <button class="p-2 hover:bg-slate-100 dark:hover:bg-slate-850 rounded-full text-slate-400 hover:text-slate-700 transition-colors" title="Report User">
-                        <span class="material-symbols-outlined text-xl">report</span>
+
+                <div class="flex items-center gap-2 flex-shrink-0">
+                    <button id="mark-returned-btn" class="hidden px-3 py-1.5 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 active:scale-95 transition-all flex items-center gap-1 shadow-sm">
+                        <span class="material-symbols-outlined text-base">task_alt</span>
+                        <span class="hidden sm:inline">Mark Returned</span>
+                    </button>
+                    <button id="report-user-btn" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full text-slate-400 hover:text-slate-700 transition-colors" title="Report Abuse">
+                        <span class="material-symbols-outlined text-lg">report</span>
                     </button>
                 </div>
             </header>
 
-            <!-- Messaging Area Scroll -->
-            <div class="flex-1 bg-slate-50 dark:bg-slate-950 p-6 overflow-y-auto space-y-4 flex flex-col">
-                <!-- Safety Tip Alert Card -->
-                <div class="p-4 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900 rounded-2xl flex gap-3 text-emerald-800 dark:text-emerald-350 text-xs">
-                    <span class="material-symbols-outlined text-lg">verified_user</span>
-                    <div>
-                        <p class="font-bold mb-0.5">KochiRetrace Safety Tip</p>
-                        <p class="leading-relaxed">Coordinate exchange at public places. We recommend meeting at active <span class="font-bold">Kochi Metro Stations</span> or the nearest <span class="font-bold">Police Station Helpdesk</span>. Avoid sharing bank details.</p>
-                    </div>
-                </div>
-
-                <div id="message-container" class="space-y-4 flex-grow flex flex-col overflow-y-auto">
-                    <!-- Message bubbles render dynamically -->
+            <!-- Meetup & Safety Action Toolbar -->
+            <div id="meetup-toolbar" class="p-2.5 bg-slate-100/80 dark:bg-slate-800/80 border-b border-slate-200/60 dark:border-slate-800 flex items-center justify-between gap-2 overflow-x-auto text-xs">
+                <span class="font-bold text-slate-600 dark:text-slate-300 text-[11px] flex items-center gap-1 flex-shrink-0">
+                    <span class="material-symbols-outlined text-sm text-primary">handshake</span> Safe Handover:
+                </span>
+                <div class="flex items-center gap-1.5 flex-shrink-0">
+                    <button id="suggest-police-btn" class="px-2.5 py-1 bg-white dark:bg-slate-700 border border-slate-250 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-50 font-semibold flex items-center gap-1 transition-all active:scale-95 text-[11px]">
+                        <span class="material-symbols-outlined text-xs text-blue-600">local_police</span> Police Station
+                    </button>
+                    <button id="suggest-metro-btn" class="px-2.5 py-1 bg-white dark:bg-slate-700 border border-slate-250 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-50 font-semibold flex items-center gap-1 transition-all active:scale-95 text-[11px]">
+                        <span class="material-symbols-outlined text-xs text-emerald-600">subway</span> Metro Station
+                    </button>
+                    <button id="share-location-btn" class="px-2.5 py-1 bg-white dark:bg-slate-700 border border-slate-250 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-50 font-semibold flex items-center gap-1 transition-all active:scale-95 text-[11px]">
+                        <span class="material-symbols-outlined text-xs text-rose-600">location_on</span> Share Location
+                    </button>
                 </div>
             </div>
 
+            <!-- Messaging Scroll Container -->
+            <div class="flex-1 bg-slate-50 dark:bg-slate-950 p-4 md:p-6 overflow-y-auto space-y-4 flex flex-col">
+                <!-- Security Tip Banner -->
+                <div class="p-3.5 bg-emerald-50/90 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900 rounded-2xl flex gap-3 text-emerald-900 dark:text-emerald-300 text-xs">
+                    <span class="material-symbols-outlined text-lg text-emerald-600">shield</span>
+                    <div class="leading-relaxed">
+                        <p class="font-bold">KochiRetrace Encrypted & Verified Workspace</p>
+                        <p class="mt-0.5 text-[11px] text-emerald-800 dark:text-emerald-400">Never send money advance or bank OTPs. Meet at active <span class="font-semibold">Kochi Metro stations</span> or public <span class="font-semibold">Police Station Helpdesks</span>.</p>
+                    </div>
+                </div>
+
+                <div id="message-container" class="space-y-3 flex-grow flex flex-col overflow-y-auto">
+                    <!-- Dynamic Messages -->
+                </div>
+            </div>
+
+            <!-- One-Tap Smart Quick Replies Chips -->
+            <div id="quick-chips" class="px-3 py-2 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex gap-2 overflow-x-auto no-scrollbar">
+                <button class="chip-btn px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-primary-container/20 hover:text-primary rounded-full text-xs font-semibold whitespace-nowrap transition-colors">I found your item.</button>
+                <button class="chip-btn px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-primary-container/20 hover:text-primary rounded-full text-xs font-semibold whitespace-nowrap transition-colors">Can you describe it?</button>
+                <button class="chip-btn px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-primary-container/20 hover:text-primary rounded-full text-xs font-semibold whitespace-nowrap transition-colors">Where did you lose it?</button>
+                <button class="chip-btn px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-primary-container/20 hover:text-primary rounded-full text-xs font-semibold whitespace-nowrap transition-colors">Let's meet tomorrow.</button>
+                <button class="chip-btn px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-primary-container/20 hover:text-primary rounded-full text-xs font-semibold whitespace-nowrap transition-colors">I'll be there in 10 minutes.</button>
+                <button class="chip-btn px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-primary-container/20 hover:text-primary rounded-full text-xs font-semibold whitespace-nowrap transition-colors">Thank you!</button>
+            </div>
+
             <!-- Message Form Input -->
-            <footer class="p-4 bg-white dark:bg-slate-900 border-t border-slate-250 dark:border-slate-800/80">
-                <form id="message-form" class="flex gap-3">
-                    <input id="message-input" class="flex-grow bg-slate-100 dark:bg-slate-800 rounded-xl px-4 py-3 border-none focus:ring-2 focus:ring-primary text-sm outline-none text-slate-800 dark:text-white placeholder:text-slate-400" placeholder="Type a secure message..." type="text" autocomplete="off">
-                    <button type="submit" class="bg-primary text-white p-3 rounded-xl hover:opacity-95 transition-all shadow-md active:scale-95 flex items-center justify-center">
-                        <span class="material-symbols-outlined text-xl">send</span>
+            <footer class="p-3 md:p-4 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800/80">
+                <form id="message-form" class="flex gap-2 items-center">
+                    <input id="chat-img-input" class="hidden" type="file" accept="image/*">
+                    <button type="button" id="upload-img-btn" class="p-2.5 text-slate-500 hover:text-primary hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors" title="Attach Photo">
+                        <span class="material-symbols-outlined text-xl">photo_camera</span>
+                    </button>
+                    <input id="message-input" class="flex-grow bg-slate-100 dark:bg-slate-800 rounded-xl px-4 py-2.5 border-none focus:ring-2 focus:ring-primary text-xs md:text-sm outline-none text-slate-800 dark:text-white placeholder:text-slate-400" placeholder="Type a secure recovery message..." type="text" autocomplete="off">
+                    <button type="submit" class="bg-primary text-white p-2.5 md:px-4 rounded-xl hover:opacity-95 transition-all shadow-md active:scale-95 flex items-center justify-center font-bold text-xs md:text-sm gap-1">
+                        <span class="material-symbols-outlined text-lg">send</span>
+                        <span class="hidden sm:inline">Send</span>
                     </button>
                 </form>
             </footer>
@@ -187,6 +232,43 @@
 
     </div>
 </main>
+
+<!-- Completion & Rating Feedback Modal -->
+<div id="recovery-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md close-recovery-modal"></div>
+    <div class="relative bg-white dark:bg-slate-900 rounded-3xl shadow-2xl max-w-md w-full p-6 border border-slate-200 dark:border-slate-800 z-10 animate-fade-in space-y-5 text-center">
+        <div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto text-3xl">
+            <span class="material-symbols-outlined">verified</span>
+        </div>
+        <div>
+            <h2 class="text-xl font-extrabold text-slate-900 dark:text-white">Congratulations! 🎉</h2>
+            <p class="text-xs text-slate-500 mt-1">This item recovery has been marked as completed.</p>
+        </div>
+
+        <form id="recovery-form" class="space-y-4 text-left">
+            <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Rate the Recovery Experience</label>
+                <div class="flex justify-center gap-2 text-2xl text-amber-400 cursor-pointer" id="star-rating">
+                    <span class="star font-bold" data-val="1">★</span>
+                    <span class="star font-bold" data-val="2">★</span>
+                    <span class="star font-bold" data-val="3">★</span>
+                    <span class="star font-bold" data-val="4">★</span>
+                    <span class="star font-bold" data-val="5">★</span>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1" for="feedback-text">Thank the Finder / Community Note</label>
+                <textarea id="feedback-text" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 focus:ring-1 focus:ring-primary outline-none" rows="3" placeholder="Write a short thank you message for the community..."></textarea>
+            </div>
+
+            <div class="flex gap-2 justify-end pt-2">
+                <button type="button" class="px-4 py-2 text-xs border border-slate-300 rounded-xl font-semibold close-recovery-modal">Skip</button>
+                <button type="submit" class="px-5 py-2 text-xs bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 shadow-md">Complete & Archive</button>
+            </div>
+        </form>
+    </div>
+</div>
 
 <!-- Dynamic Global Footer -->
 <footer id="global-footer"></footer>

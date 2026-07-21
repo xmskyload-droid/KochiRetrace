@@ -308,24 +308,30 @@ document.addEventListener('DOMContentLoaded', () => {
                     <p class="text-slate-700 dark:text-slate-300 italic mt-2">" ${req.reason} "</p>
                 </div>
 
-                ${isPending ? `
-                    <div class="flex justify-end gap-2 pt-2">
-                        <button data-id="${req.id}" class="decline-claim-btn px-4 py-2 border border-red-300 hover:bg-red-50 dark:hover:bg-red-950/20 text-error rounded-lg text-xs font-bold transition-all active:scale-95">
-                            Decline
-                        </button>
-                        <button data-id="${req.id}" class="verify-claim-btn px-5 py-2 bg-primary text-white hover:opacity-95 rounded-lg text-xs font-bold transition-all active:scale-95 shadow-md flex items-center gap-1">
-                            <span class="material-symbols-outlined text-sm">verified</span> Verify Ownership
-                        </button>
-                    </div>
-                ` : ''}
+                <div class="flex justify-between items-center pt-2 border-t border-slate-100 dark:border-slate-800">
+                    <a href="messages.html?claimId=${req.id}" class="inline-flex items-center gap-1 text-xs text-primary font-bold hover:underline">
+                        <span class="material-symbols-outlined text-sm">chat</span> Open Recovery Workspace
+                    </a>
+                    
+                    ${isPending ? `
+                        <div class="flex justify-end gap-2">
+                            <button data-id="${req.id}" class="decline-claim-btn px-3 py-1.5 border border-red-300 hover:bg-red-50 dark:hover:bg-red-950/20 text-error rounded-lg text-xs font-bold transition-all active:scale-95">
+                                Decline
+                            </button>
+                            <button data-id="${req.id}" class="verify-claim-btn px-4 py-1.5 bg-primary text-white hover:opacity-95 rounded-lg text-xs font-bold transition-all active:scale-95 shadow-md flex items-center gap-1">
+                                <span class="material-symbols-outlined text-sm">verified</span> Approve Claim
+                            </button>
+                        </div>
+                    ` : ''}
 
-                ${isVerified ? `
-                    <div class="flex justify-end gap-2 pt-2">
-                        <button data-id="${req.id}" class="complete-claim-btn px-5 py-2 bg-secondary text-white hover:opacity-95 rounded-lg text-xs font-bold transition-all active:scale-95 shadow-md flex items-center gap-1">
-                            <span class="material-symbols-outlined text-sm">check_circle</span> Mark as Returned
-                        </button>
-                    </div>
-                ` : ''}
+                    ${isVerified ? `
+                        <div class="flex justify-end gap-2">
+                            <button data-id="${req.id}" class="complete-claim-btn px-4 py-1.5 bg-secondary text-white hover:opacity-95 rounded-lg text-xs font-bold transition-all active:scale-95 shadow-md flex items-center gap-1">
+                                <span class="material-symbols-outlined text-sm">check_circle</span> Mark as Returned
+                            </button>
+                        </div>
+                    ` : ''}
+                </div>
             </div>
             `;
         }).join('');

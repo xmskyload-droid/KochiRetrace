@@ -107,8 +107,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 activeChatId = item.getAttribute('data-id');
                 renderChatList(filterQuery);
                 renderActiveChat();
+
+                // Toggle mobile view panels
+                const asidePanel = document.getElementById('chat-aside-panel');
+                const threadPanel = document.getElementById('chat-thread-panel');
+                if (window.innerWidth < 768 && asidePanel && threadPanel) {
+                    asidePanel.classList.add('hidden');
+                    threadPanel.classList.remove('hidden');
+                }
             });
         });
+
+        // Mobile back button handler
+        const backBtn = document.getElementById('back-to-chats-btn');
+        if (backBtn) {
+            backBtn.onclick = () => {
+                const asidePanel = document.getElementById('chat-aside-panel');
+                const threadPanel = document.getElementById('chat-thread-panel');
+                if (asidePanel && threadPanel) {
+                    asidePanel.classList.remove('hidden');
+                    threadPanel.classList.add('hidden');
+                }
+            };
+        }
     }
 
     // Load and Render Active Thread Messages

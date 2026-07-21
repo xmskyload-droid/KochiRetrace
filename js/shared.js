@@ -6,19 +6,80 @@ document.addEventListener('DOMContentLoaded', () => {
     const rootPrefix = isSubPage ? '../' : './';
     const pagesPrefix = isSubPage ? './' : 'pages/';
 
+    // Inject global mobile & PWA CSS fixes
+    injectMobileStyles();
+
     // 1. Centralized Route Protection
     protectRoutes(pagesPrefix);
 
     // Initialize Theme
     initTheme();
 
-    // Render Global Header and Footer
+    // Render Global Header, Bottom Mobile Nav, and Footer
     renderHeader(rootPrefix, pagesPrefix);
+    renderBottomNav(rootPrefix, pagesPrefix);
     renderFooter(rootPrefix, pagesPrefix);
 
     // Setup active state on nav links
     highlightActiveLink();
 });
+
+// --- INJECT GLOBAL MOBILE & ACCESSIBILITY STYLES ---
+function injectMobileStyles() {
+    if (document.getElementById('kr-mobile-styles')) return;
+    const style = document.createElement('style');
+    style.id = 'kr-mobile-styles';
+    style.innerHTML = `
+        /* Safe area inset support */
+        body {
+            padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px));
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        @media (min-width: 1024px) {
+            body {
+                padding-bottom: 0 !important;
+            }
+        }
+
+        /* Prevent auto-zoom on iOS Safari for inputs */
+        @media (max-width: 767px) {
+            input, select, textarea {
+                font-size: 16px !important;
+            }
+        }
+
+        /* Enforce minimum touch target sizes */
+        button, a, input[type="submit"], input[type="button"] {
+            min-height: 44px;
+            touch-action: manipulation;
+        }
+
+        /* Custom scrollbar for mobile drawers */
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0,0,0,0.15);
+            border-radius: 99px;
+        }
+
+        /* Responsive table wrappers */
+        .table-responsive-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            width: 100%;
+        }
+
+        /* Bottom Nav Safe Padding */
+        .bottom-nav-safe {
+            padding-bottom: max(8px, env(safe-area-inset-bottom, 8px));
+        }
+    `;
+    document.head.appendChild(style);
+}
 
 // --- ROUTE PROTECTION SYSTEM ---
 function protectRoutes(pagesPrefix) {
@@ -229,6 +290,60 @@ function renderHeader(rootPrefix, pagesPrefix) {
 
     // Attach Dropdown Toggle Handlers
     setupHeaderDropdowns();
+}
+
+// --- RENDER MOBILE FIXED BOTTOM NAVIGATION BAR ---
+function renderBottomNav(rootPrefix, pagesPrefix) {
+    let bottomNavEl = document.getElementById('global-bottom-nav');
+    if (!bottomNavEl) {
+        bottomNavEl = document.createElement('nav');
+        bottomNavEl.id = 'global-bottom-nav';
+        document.body.appendChild(bottomNavEl);
+    }
+
+    bottomNavEl.className = "lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 shadow-lg bottom-nav-safe transition-all";
+    
+    const user = window.Storage ? window.Storage.getUser() : null;
+    const profileLink = user ? `${pagesPrefix}dashboard.html` : `${pagesPrefix}login.html`;
+    const profileIcon = user ? `<img src="${user.avatar}" class="w-6 h-6 rounded-full border border-primary object-cover" alt="Profile">` : `<span class="material-symbols-outlined text-2xl">person</span>`;
+    const profileLabel = user ? 'Dashboard' : 'Sign In';
+
+    const currentFile = window.location.pathname.split('/').pop() || 'index.html';
+
+    bottomNavEl.innerHTML = `
+        <div class="grid grid-cols-5 items-center h-14 max-w-md mx-auto px-2 text-center text-[10px] font-bold">
+            <!-- Home -->
+            <a href="${rootPrefix}index.html" class="flex flex-col items-center justify-center h-full ${currentFile === 'index.html' || currentFile === '' ? 'text-primary' : 'text-slate-500 hover:text-slate-900'} active:scale-95 transition-transform" aria-label="Home">
+                <span class="material-symbols-outlined text-xl">home</span>
+                <span>Home</span>
+            </a>
+
+            <!-- Browse -->
+            <a href="${pagesPrefix}browse.html" class="flex flex-col items-center justify-center h-full ${currentFile === 'browse.html' ? 'text-primary' : 'text-slate-500 hover:text-slate-900'} active:scale-95 transition-transform" aria-label="Browse Items">
+                <span class="material-symbols-outlined text-xl">search</span>
+                <span>Browse</span>
+            </a>
+
+            <!-- Floating Central Report Item Button -->
+            <div class="flex items-center justify-center relative">
+                <a href="${pagesPrefix}report.html" class="absolute -top-5 w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center shadow-xl border-4 border-white active:scale-90 transition-transform" aria-label="Report Lost or Found Item">
+                    <span class="material-symbols-outlined text-2xl">add</span>
+                </a>
+            </div>
+
+            <!-- Map -->
+            <a href="${pagesPrefix}map.html" class="flex flex-col items-center justify-center h-full ${currentFile === 'map.html' ? 'text-primary' : 'text-slate-500 hover:text-slate-900'} active:scale-95 transition-transform" aria-label="Live Map">
+                <span class="material-symbols-outlined text-xl">map</span>
+                <span>Map</span>
+            </a>
+
+            <!-- Profile / Dashboard -->
+            <a href="${profileLink}" class="flex flex-col items-center justify-center h-full ${currentFile === 'dashboard.html' || currentFile === 'login.html' ? 'text-primary' : 'text-slate-500 hover:text-slate-900'} active:scale-95 transition-transform" aria-label="${profileLabel}">
+                ${profileIcon}
+                <span class="truncate max-w-[50px]">${profileLabel}</span>
+            </a>
+        </div>
+    `;
 }
 
 // --- RENDER DYNAMIC NAVIGATION FOOTER ---

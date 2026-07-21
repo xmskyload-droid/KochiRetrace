@@ -2,7 +2,10 @@
 <html lang="en" class="light">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+    <meta name="theme-color" content="#003e7a">
+    <link rel="manifest" href="../manifest.json">
+    <link rel="apple-touch-icon" href="../assets/images/logo.png">
     <title>Messages | KochiRetrace</title>
     <meta name="robots" content="noindex, nofollow">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Atkinson+Hyperlegible+Next:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
@@ -117,7 +120,7 @@
     <div class="flex gap-6 bg-white dark:bg-slate-900 rounded-3xl h-full shadow-[0px_4px_24px_rgba(0,85,164,0.04)] border border-slate-200 dark:border-slate-800 overflow-hidden">
         
         <!-- Sidebar Panel: Active Chats list -->
-        <aside class="w-full md:w-80 lg:w-96 flex flex-col border-r border-slate-250 dark:border-slate-800/80">
+        <aside id="chat-aside-panel" class="w-full md:w-80 lg:w-96 flex flex-col border-r border-slate-250 dark:border-slate-800/80">
             <div class="p-6 border-b border-slate-250 dark:border-slate-800/80">
                 <h2 class="text-xl font-bold text-primary dark:text-primary-fixed mb-4">Messages</h2>
                 <div class="relative">
@@ -131,21 +134,24 @@
         </aside>
 
         <!-- Right Side Panel: Chat Thread -->
-        <section class="hidden md:flex flex-grow flex-col relative h-full">
+        <section id="chat-thread-panel" class="hidden md:flex flex-grow flex-col relative h-full w-full">
             <!-- Chat Header -->
             <header class="p-4 border-b border-slate-250 dark:border-slate-800/80 flex items-center justify-between bg-white dark:bg-slate-900">
-                <div class="flex items-center gap-4">
-                    <div class="w-11 h-11 rounded-full overflow-hidden border-2 border-primary-fixed">
+                <div class="flex items-center gap-3">
+                    <button id="back-to-chats-btn" class="md:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-full flex items-center justify-center" aria-label="Back to messages list">
+                        <span class="material-symbols-outlined text-xl">arrow_back</span>
+                    </button>
+                    <div class="w-11 h-11 rounded-full overflow-hidden border-2 border-primary-fixed flex-shrink-0">
                         <img id="chat-header-avatar" class="w-full h-full object-cover" src="" alt="Active contact avatar">
                     </div>
-                    <div>
-                        <h2 id="chat-header-name" class="text-sm font-bold text-slate-900 dark:text-white leading-snug">Name</h2>
-                        <p id="chat-header-item" class="text-[10px] text-primary dark:text-primary-fixed font-bold flex items-center gap-1 mt-0.5">
+                    <div class="min-w-0">
+                        <h2 id="chat-header-name" class="text-sm font-bold text-slate-900 dark:text-white leading-snug truncate">Name</h2>
+                        <p id="chat-header-item" class="text-[10px] text-primary dark:text-primary-fixed font-bold flex items-center gap-1 mt-0.5 truncate">
                             Item Details Link
                         </p>
                     </div>
                 </div>
-                <div class="flex gap-1.5">
+                <div class="flex gap-1.5 flex-shrink-0">
                     <button class="p-2 hover:bg-slate-100 dark:hover:bg-slate-850 rounded-full text-slate-400 hover:text-slate-700 transition-colors" title="Report User">
                         <span class="material-symbols-outlined text-xl">report</span>
                     </button>

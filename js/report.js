@@ -94,9 +94,11 @@ document.addEventListener('DOMContentLoaded', () => {
         reader.readAsDataURL(file);
     }
 
-    // Trigger input click
-    fileZone.addEventListener('click', () => {
-        fileInput.click();
+    // Trigger input click safely
+    fileZone.addEventListener('click', (e) => {
+        if (e.target !== fileInput) {
+            fileInput.click();
+        }
     });
 
     fileInput.addEventListener('change', (e) => {

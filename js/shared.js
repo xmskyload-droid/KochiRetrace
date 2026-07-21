@@ -127,8 +127,8 @@ function renderHeader(rootPrefix, pagesPrefix) {
     if (!headerEl) return;
 
     // Apply header classes
-    headerEl.className = "bg-surface-container-lowest/95 backdrop-blur-md shadow-sm sticky top-0 z-50 transition-all duration-300 w-full border-b border-slate-100";
-    headerEl.style.height = "80px";
+    headerEl.className = "bg-surface-container-lowest/95 backdrop-blur-md shadow-sm sticky top-0 z-50 transition-all duration-300 w-full border-b border-slate-100 h-20 flex items-center";
+    headerEl.style.height = "";
 
     const user = window.Storage ? window.Storage.getUser() : null;
     const notifs = user ? window.Storage.getNotifications(user.id) : [];
@@ -448,7 +448,8 @@ function setupHeaderDropdowns() {
 
     // Mobile Menu Drawer
     if (mobileMenuBtn && mobileDrawer) {
-        mobileMenuBtn.addEventListener('click', () => {
+        mobileMenuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
             mobileDrawer.classList.remove('hidden');
         });
     }

@@ -22,6 +22,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Setup active state on nav links
     highlightActiveLink();
+
+    // Register PWA Service Worker
+    if ('serviceWorker' in navigator) {
+        const swPath = isSubPage ? '../sw.js' : './sw.js';
+        navigator.serviceWorker.register(swPath).catch(() => {});
+    }
 });
 
 // --- INJECT GLOBAL MOBILE & ACCESSIBILITY STYLES ---

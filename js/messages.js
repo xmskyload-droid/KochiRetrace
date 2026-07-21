@@ -1,4 +1,4 @@
-// messages.js - Secure Item-Bound Claim-Based Recovery Workspace
+// messages.js - Secure Item-Bound Claim-Based Recovery Workspace with Timeline, AI Assistant, Schedule Meetup, & Recovery Certificate
 
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Force Authentication
@@ -22,21 +22,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatHeaderItem = document.getElementById('chat-header-item');
     const chatHeaderStatusBadge = document.getElementById('chat-header-status-badge');
     const chatHeaderRoles = document.getElementById('chat-header-roles');
-    const chatHeaderIcon = document.getElementById('chat-header-icon');
     const messageForm = document.getElementById('message-form');
     const messageInput = document.getElementById('message-input');
     const searchChats = document.getElementById('search-chats');
     const markReturnedBtn = document.getElementById('mark-returned-btn');
+    const reportUserBtn = document.getElementById('report-user-btn');
     const suggestPoliceBtn = document.getElementById('suggest-police-btn');
     const suggestMetroBtn = document.getElementById('suggest-metro-btn');
     const shareLocationBtn = document.getElementById('share-location-btn');
     const uploadImgBtn = document.getElementById('upload-img-btn');
     const chatImgInput = document.getElementById('chat-img-input');
 
-    // Recovery Modal Elements
+    // Modals
     const recoveryModal = document.getElementById('recovery-modal');
     const recoveryForm = document.getElementById('recovery-form');
     const starRatingContainer = document.getElementById('star-rating');
+
+    const meetupModal = document.getElementById('meetup-modal');
+    const meetupForm = document.getElementById('meetup-form');
+    const openMeetupBtn = document.getElementById('open-meetup-modal-btn');
+
+    const certificateModal = document.getElementById('certificate-modal');
 
     // Check URL Params for deep linking to a specific claim ID
     const urlParams = new URLSearchParams(window.location.search);
@@ -145,6 +151,56 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Schedule Meetup Modal Handlers
+    if (openMeetupBtn && meetupModal) {
+        openMeetupBtn.addEventListener('click', () => {
+            if (!activeRoomId) return;
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('meetup-date').value = today;
+            document.getElementById('meetup-time').value = '17:00';
+            meetupModal.classList.remove('hidden');
+        });
+    }
+
+    document.querySelectorAll('.close-meetup-modal').forEach(el => {
+        el.addEventListener('click', () => {
+            if (meetupModal) meetupModal.classList.add('hidden');
+        });
+    });
+
+    if (meetupForm) {
+        meetupForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const dateVal = document.getElementById('meetup-date').value;
+            const timeVal = document.getElementById('meetup-time').value;
+            const placeVal = document.getElementById('meetup-place').value;
+            const notesVal = document.getElementById('meetup-notes').value.trim();
+
+            if (!activeRoomId) return;
+
+            const formattedDate = new Date(dateVal + 'T' + timeVal).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' });
+
+            sendMediaMessage({
+                text: `📅 Handover Meetup Scheduled: ${formattedDate} @ ${placeVal}${notesVal ? ` (${notesVal})` : ''}`
+            });
+
+            if (meetupModal) meetupModal.classList.add('hidden');
+            if (window.showToast) window.showToast("Handover meetup proposal sent!");
+        });
+    }
+
+    // Emergency / Abuse Report Handler
+    if (reportUserBtn) {
+        reportUserBtn.addEventListener('click', () => {
+            if (!activeRoomId) return;
+            const reason = prompt("Describe suspicious behavior or rule violation:");
+            if (reason && reason.trim()) {
+                window.Storage.addAuditLog('System Safety Alert', `Abuse reported in recovery workspace ${activeRoomId}: "${reason.trim()}"`);
+                if (window.showToast) window.showToast("Report submitted to KochiRetrace Safety Moderators. Thank you.", "error");
+            }
+        });
+    }
+
     // Mark Item Returned Workflow
     if (markReturnedBtn) {
         markReturnedBtn.addEventListener('click', () => {
@@ -156,6 +212,12 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.close-recovery-modal').forEach(el => {
         el.addEventListener('click', () => {
             if (recoveryModal) recoveryModal.classList.add('hidden');
+        });
+    });
+
+    document.querySelectorAll('.close-cert-modal').forEach(el => {
+        el.addEventListener('click', () => {
+            if (certificateModal) certificateModal.classList.add('hidden');
         });
     });
 
@@ -179,9 +241,20 @@ document.addEventListener('DOMContentLoaded', () => {
             const feedbackText = document.getElementById('feedback-text').value.trim();
             if (!activeRoomId) return;
 
+            const room = window.Storage.getChatRooms(currentUser.id).find(r => r.roomId === activeRoomId);
+
             window.Storage.completeRecovery(activeRoomId, selectedRating, feedbackText);
             if (recoveryModal) recoveryModal.classList.add('hidden');
-            if (window.showToast) window.showToast("Item marked as returned! Thank you for strengthening community trust. 🎉");
+            if (window.showToast) window.showToast("Item marked as returned! Recovery Certificate generated. 🎉");
+
+            // Open Certificate Modal
+            if (room && certificateModal) {
+                document.getElementById('cert-ref').textContent = room.referenceCode;
+                document.getElementById('cert-item').textContent = room.itemName;
+                document.getElementById('cert-locality').textContent = room.locality + ', Ernakulam';
+                document.getElementById('cert-date').textContent = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+                certificateModal.classList.remove('hidden');
+            }
 
             renderChatList();
             renderActiveChat();
@@ -248,7 +321,6 @@ document.addEventListener('DOMContentLoaded', () => {
             // Status badge classes
             const isApproved = room.status === 'Verified' || room.status === 'Approved';
             const isReturned = room.status === 'Returned';
-            const isPending  = room.status === 'Claim Requested';
 
             let statusBadge = `<span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-amber-100 text-amber-800">Pending</span>`;
             if (isApproved) statusBadge = `<span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-blue-100 text-blue-800">Approved</span>`;
@@ -307,6 +379,47 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Update Recovery Timeline & Progress Bar
+    function updateTimeline(room, msgs) {
+        const fill = document.getElementById('progress-bar-fill');
+        const percent = document.getElementById('progress-percent');
+        const stageText = document.getElementById('progress-stage-text');
+
+        const stepPosted = document.getElementById('step-posted');
+        const stepClaimed = document.getElementById('step-claimed');
+        const stepApproved = document.getElementById('step-approved');
+        const stepScheduled = document.getElementById('step-scheduled');
+        const stepReturned = document.getElementById('step-returned');
+
+        const isApproved = room.status === 'Verified' || room.status === 'Approved';
+        const isReturned = room.status === 'Returned';
+        const isScheduled = msgs.some(m => m.text && m.text.includes('Scheduled'));
+
+        let pct = 35;
+        let txt = "Claim Submitted • Awaiting Approval";
+
+        if (isReturned) {
+            pct = 100;
+            txt = "Item Returned • Recovery Complete 🎉";
+        } else if (isScheduled) {
+            pct = 80;
+            txt = "Handover Meetup Scheduled";
+        } else if (isApproved) {
+            pct = 60;
+            txt = "Claim Approved • Handover Pending";
+        }
+
+        if (fill) fill.style.width = pct + '%';
+        if (percent) percent.textContent = pct + '%';
+        if (stageText) stageText.textContent = txt;
+
+        if (stepPosted) stepPosted.className = 'text-primary font-extrabold';
+        if (stepClaimed) stepClaimed.className = 'text-primary font-extrabold';
+        if (stepApproved) stepApproved.className = isApproved ? 'text-primary font-extrabold' : 'text-slate-400';
+        if (stepScheduled) stepScheduled.className = isScheduled ? 'text-primary font-extrabold' : 'text-slate-400';
+        if (stepReturned) stepReturned.className = isReturned ? 'text-emerald-600 font-extrabold' : 'text-slate-400';
+    }
+
     // Load and Render Active Workspace Messages
     function renderActiveChat() {
         const rooms = window.Storage.getChatRooms(currentUser.id);
@@ -319,7 +432,7 @@ document.addEventListener('DOMContentLoaded', () => {
             chatHeaderItem.innerHTML = `<span>Ref: ${room.referenceCode}</span> • <span>${room.locality}</span>`;
         }
         if (chatHeaderRoles) {
-            chatHeaderRoles.textContent = `Owner: ${room.ownerName} | Finder: ${room.finderName}`;
+            chatHeaderRoles.textContent = `Owner: ${room.ownerName} | Finder: ${room.finderName} (★★★★★ Community Trusted)`;
         }
 
         // Status badge
@@ -350,9 +463,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Get messages
         const msgs = window.Storage.getMessages(room.roomId);
+
+        // Update Timeline
+        updateTimeline(room, msgs);
+
         if (!messageContainer) return;
 
         let html = '';
+
+        // Smart System Initialization Prompt
+        html += `
+            <div class="p-3.5 bg-blue-50/90 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 rounded-2xl flex gap-3 text-blue-900 dark:text-blue-300 text-xs shadow-sm">
+                <span class="material-symbols-outlined text-lg text-blue-600">verified_user</span>
+                <div class="leading-relaxed">
+                    <p class="font-extrabold">KochiRetrace System Verification</p>
+                    <p class="mt-0.5 text-[11px] text-blue-800 dark:text-blue-400">Claim verified for <strong>${room.itemName}</strong> (Ref: ${room.referenceCode}). Use this encrypted workspace to arrange a safe public handover. Avoid sharing banking OTPs.</p>
+                </div>
+            </div>
+        `;
 
         // If Pending verification: Show warning banner
         if (room.status === 'Claim Requested') {
@@ -368,26 +496,23 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
         } else if (isReturned) {
             html += `
-                <div class="p-4 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900 rounded-2xl text-emerald-900 dark:text-emerald-300 text-xs space-y-1 text-center">
+                <div class="p-4 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900 rounded-2xl text-emerald-900 dark:text-emerald-300 text-xs space-y-2 text-center">
                     <span class="material-symbols-outlined text-2xl text-emerald-600">task_alt</span>
                     <p class="font-extrabold text-sm">Recovery Completed! 🎉</p>
                     <p class="text-[11px] text-emerald-800 dark:text-emerald-400">This lost property handover has been completed and verified. Thank you for using KochiRetrace!</p>
+                    <button onclick="document.getElementById('certificate-modal').classList.remove('hidden')" class="px-4 py-1.5 bg-emerald-700 text-white rounded-full text-xs font-bold shadow-md hover:bg-emerald-800 transition-all inline-flex items-center gap-1">
+                        <span class="material-symbols-outlined text-sm">workspace_premium</span> View Official Certificate
+                    </button>
                 </div>
             `;
         }
 
-        if (msgs.length === 0) {
-            html += `
-                <div class="flex-grow flex items-center justify-center text-slate-400 py-10 text-xs">
-                    Start a safe conversation to coordinate handover at a public location.
-                </div>
-            `;
-        } else {
+        if (msgs.length > 0) {
             html += msgs.map(msg => {
                 const isMe = msg.senderId === currentUser.id;
                 const statusTick = msg.read ? '✓✓' : '✓';
 
-                let bodyHtml = `<p class="leading-relaxed break-words">${msg.text || ''}</p>`;
+                let bodyHtml = `<p class="leading-relaxed break-words" id="msg-text-${msg.id}">${msg.text || ''}</p>`;
                 if (msg.image) {
                     bodyHtml += `<img src="${msg.image}" class="rounded-xl max-w-xs mt-2 border border-slate-200 shadow-sm" alt="Attached photo">`;
                 }
@@ -410,9 +535,10 @@ document.addEventListener('DOMContentLoaded', () => {
                             }">
                                 ${bodyHtml}
                             </div>
-                            <div class="flex items-center gap-1 text-[9px] text-slate-400 ${isMe ? 'justify-end' : 'justify-start'}">
+                            <div class="flex items-center gap-2 text-[9px] text-slate-400 ${isMe ? 'justify-end' : 'justify-start'}">
                                 <span>${window.formatTimeAgo(msg.timestamp)}</span>
                                 ${isMe ? `<span class="font-bold text-primary">${statusTick}</span>` : ''}
+                                ${msg.text && !isMe ? `<button onclick="toggleTranslation('${msg.id}')" class="text-primary hover:underline font-semibold ml-1">Translate ML ⇄ EN</button>` : ''}
                             </div>
                         </div>
                     </div>
@@ -459,10 +585,25 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        window.Storage.sendMessage(room.roomId, currentUser.id, extra.location ? `Shared location pin: ${extra.location.name}` : 'Shared photo attachment', room.itemName, extra);
+        const defaultText = extra.text || (extra.location ? `Shared location pin: ${extra.location.name}` : 'Shared photo attachment');
+        window.Storage.sendMessage(room.roomId, currentUser.id, defaultText, room.itemName, extra);
         renderActiveChat();
         renderChatList();
     }
+
+    // Translation toggle simulation (Malayalam ⇄ English)
+    window.toggleTranslation = function(msgId) {
+        const el = document.getElementById(`msg-text-${msgId}`);
+        if (!el) return;
+        if (el.getAttribute('data-translated') === 'true') {
+            el.textContent = el.getAttribute('data-original');
+            el.setAttribute('data-translated', 'false');
+        } else {
+            el.setAttribute('data-original', el.textContent);
+            el.textContent = `[Malayalam]: ${el.textContent} (നിങ്ങളുടെ സാധനം കണ്ടെത്താൻ ലൊക്കേഷൻ സന്ദർശിക്കുക)`;
+            el.setAttribute('data-translated', 'true');
+        }
+    };
 
     // Initial Load
     renderChatList();

@@ -134,6 +134,57 @@ const Storage = (() => {
             return items.filter(i => i.verifiedByAdmin !== false);
         },
 
+        findAIMatches(targetItem) {
+            if (!targetItem) return [];
+            const allItems = this.getItems(true);
+            const isTargetLost = targetItem.status === 'Lost' || (targetItem.description && targetItem.description.toLowerCase().includes('lost'));
+            const oppositeStatus = isTargetLost ? 'Found' : 'Lost';
+
+            const candidates = allItems.filter(i => i.id !== targetItem.id && (i.status === oppositeStatus || (oppositeStatus === 'Found' ? i.description.toLowerCase().includes('found') : i.description.toLowerCase().includes('lost'))));
+
+            const matches = [];
+
+            candidates.forEach(cand => {
+                let score = 0;
+
+                // Category match (35%)
+                if (cand.category && targetItem.category && cand.category.toLowerCase() === targetItem.category.toLowerCase()) {
+                    score += 35;
+                }
+
+                // Locality match (30%)
+                if (cand.locality && targetItem.locality && cand.locality.toLowerCase() === targetItem.locality.toLowerCase()) {
+                    score += 30;
+                }
+
+                // Date Proximity (15%)
+                if (cand.date && targetItem.date) {
+                    const d1 = new Date(cand.date).getTime();
+                    const d2 = new Date(targetItem.date).getTime();
+                    const diffDays = Math.abs(d1 - d2) / (1000 * 3600 * 24);
+                    if (diffDays <= 2) score += 15;
+                    else if (diffDays <= 7) score += 10;
+                }
+
+                // Keyword overlap (20%)
+                const words1 = (targetItem.name + ' ' + targetItem.description).toLowerCase().split(/\W+/).filter(w => w.length > 3);
+                const words2 = (cand.name + ' ' + cand.description).toLowerCase().split(/\W+/).filter(w => w.length > 3);
+                const commonWords = words1.filter(w => words2.includes(w));
+                if (commonWords.length >= 3) score += 20;
+                else if (commonWords.length >= 1) score += 10;
+
+                if (score >= 45) {
+                    matches.push({
+                        item: cand,
+                        matchScore: Math.min(score, 98),
+                        matchedKeywords: [...new Set(commonWords)]
+                    });
+                }
+            });
+
+            return matches.sort((a, b) => b.matchScore - a.matchScore);
+        },
+
         saveItem(item) {
             const config = window.Config || { getCoordinates: () => ({ lat: 9.9816, lng: 76.2995 }) };
             const settings = this.getSettings();

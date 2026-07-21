@@ -176,6 +176,9 @@
                     <span class="material-symbols-outlined text-sm text-primary">handshake</span> Safe Handover:
                 </span>
                 <div class="flex items-center gap-1.5 flex-shrink-0">
+                    <button id="open-meetup-modal-btn" class="px-2.5 py-1 bg-primary text-white rounded-lg hover:opacity-90 font-semibold flex items-center gap-1 transition-all active:scale-95 text-[11px] shadow-sm">
+                        <span class="material-symbols-outlined text-xs">calendar_month</span> Schedule Meetup
+                    </button>
                     <button id="suggest-police-btn" class="px-2.5 py-1 bg-white dark:bg-slate-700 border border-slate-250 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-50 font-semibold flex items-center gap-1 transition-all active:scale-95 text-[11px]">
                         <span class="material-symbols-outlined text-xs text-blue-600">local_police</span> Police Station
                     </button>
@@ -185,6 +188,26 @@
                     <button id="share-location-btn" class="px-2.5 py-1 bg-white dark:bg-slate-700 border border-slate-250 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-50 font-semibold flex items-center gap-1 transition-all active:scale-95 text-[11px]">
                         <span class="material-symbols-outlined text-xs text-rose-600">location_on</span> Share Location
                     </button>
+                </div>
+            </div>
+
+            <!-- Recovery Timeline & Progress Bar -->
+            <div id="timeline-bar" class="px-4 py-3 bg-white dark:bg-slate-900 border-b border-slate-200/80 dark:border-slate-800 space-y-2">
+                <div class="flex justify-between items-center text-[11px] font-bold">
+                    <span class="text-slate-700 dark:text-slate-300 flex items-center gap-1">
+                        <span class="material-symbols-outlined text-sm text-primary">timeline</span> Recovery Progress: <span id="progress-percent" class="text-primary">60%</span>
+                    </span>
+                    <span id="progress-stage-text" class="text-slate-500">Claim Approved • Handover Pending</span>
+                </div>
+                <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2 overflow-hidden">
+                    <div id="progress-bar-fill" class="bg-primary h-full rounded-full transition-all duration-500" style="width: 60%"></div>
+                </div>
+                <div class="grid grid-cols-5 text-[9px] font-bold text-center text-slate-400 gap-1 pt-1">
+                    <span id="step-posted" class="text-primary">1. Posted</span>
+                    <span id="step-claimed" class="text-primary">2. Claimed</span>
+                    <span id="step-approved" class="text-primary">3. Approved</span>
+                    <span id="step-scheduled" class="text-slate-400">4. Scheduled</span>
+                    <span id="step-returned" class="text-slate-400">5. Returned</span>
                 </div>
             </div>
 
@@ -267,6 +290,102 @@
                 <button type="submit" class="px-5 py-2 text-xs bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 shadow-md">Complete & Archive</button>
             </div>
         </form>
+    </div>
+</div>
+
+<!-- Schedule Handover Meetup Modal -->
+<div id="meetup-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md close-meetup-modal"></div>
+    <div class="relative bg-white dark:bg-slate-900 rounded-3xl shadow-2xl max-w-md w-full p-6 border border-slate-200 dark:border-slate-800 z-10 animate-fade-in space-y-4">
+        <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-3">
+            <h2 class="text-base font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary">calendar_month</span> Schedule Handover Meetup
+            </h2>
+            <button class="p-1 text-slate-400 hover:text-slate-600 rounded-full close-meetup-modal">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <form id="meetup-form" class="space-y-4">
+            <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1" for="meetup-date">Date & Time</label>
+                <div class="grid grid-cols-2 gap-2">
+                    <input id="meetup-date" type="date" class="px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 outline-none" required>
+                    <input id="meetup-time" type="time" class="px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 outline-none" required>
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1" for="meetup-place">Safe Handover Location</label>
+                <select id="meetup-place" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 outline-none">
+                    <option value="Edappally Metro Station Customer Helpdesk">Edappally Metro Station Customer Helpdesk</option>
+                    <option value="Kakkanad Civil Station Police Counter">Kakkanad Civil Station Police Counter</option>
+                    <option value="Vyttila Mobility Hub Bus Station Office">Vyttila Mobility Hub Bus Station Office</option>
+                    <option value="Marine Drive Police Help Desk">Marine Drive Police Help Desk</option>
+                    <option value="Lulu Mall Customer Information Desk">Lulu Mall Customer Information Desk</option>
+                    <option value="Custom Pinned Meeting Point">Custom Location...</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1" for="meetup-notes">Handover Notes (Optional)</label>
+                <input id="meetup-notes" type="text" class="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 outline-none" placeholder="e.g. Wearing blue jacket, near elevator">
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button type="button" class="px-4 py-2 text-xs border border-slate-300 rounded-xl font-semibold close-meetup-modal">Cancel</button>
+                <button type="submit" class="px-5 py-2 text-xs bg-primary text-white rounded-xl font-bold hover:opacity-90 shadow-md">Propose Meetup</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Official Recovery Certificate Modal -->
+<div id="certificate-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md close-cert-modal"></div>
+    <div class="relative bg-white rounded-3xl shadow-2xl max-w-lg w-full p-6 border-4 border-primary/20 z-10 animate-fade-in text-center space-y-4">
+        <div class="flex justify-between items-center border-b pb-3">
+            <span class="text-xs font-bold text-primary tracking-widest uppercase">KochiRetrace Public Recovery Portal</span>
+            <button class="p-1 text-slate-400 hover:text-slate-600 close-cert-modal">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        
+        <div class="py-4 space-y-2">
+            <div class="w-16 h-16 rounded-full bg-blue-50 text-primary flex items-center justify-center mx-auto text-3xl font-bold">
+                <span class="material-symbols-outlined">workspace_premium</span>
+            </div>
+            <h2 class="text-xl font-extrabold text-slate-900">Official Recovery Certificate</h2>
+            <p class="text-xs text-slate-500">Verified Lost &amp; Found Property Handover</p>
+        </div>
+
+        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-left space-y-2 text-xs">
+            <div class="flex justify-between border-b pb-1.5">
+                <span class="text-slate-500 font-semibold">Reference Code:</span>
+                <span id="cert-ref" class="font-extrabold text-primary">KR-2026-1045</span>
+            </div>
+            <div class="flex justify-between border-b pb-1.5">
+                <span class="text-slate-500 font-semibold">Item Recovered:</span>
+                <span id="cert-item" class="font-bold text-slate-800">Black Wallet</span>
+            </div>
+            <div class="flex justify-between border-b pb-1.5">
+                <span class="text-slate-500 font-semibold">Locality / Area:</span>
+                <span id="cert-locality" class="font-bold text-slate-800">Kakkanad, Ernakulam</span>
+            </div>
+            <div class="flex justify-between border-b pb-1.5">
+                <span class="text-slate-500 font-semibold">Completion Date:</span>
+                <span id="cert-date" class="font-bold text-emerald-700">21 July 2026</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="text-slate-500 font-semibold">Verification Seal:</span>
+                <span class="font-extrabold text-emerald-600 flex items-center gap-1">
+                    <span class="material-symbols-outlined text-sm">verified</span> VERIFIED BY KOCHIRETRACE
+                </span>
+            </div>
+        </div>
+
+        <div class="pt-2 flex justify-end gap-2">
+            <button class="px-4 py-2 text-xs border border-slate-300 rounded-xl font-semibold close-cert-modal">Close</button>
+            <button onclick="window.print()" class="px-5 py-2 text-xs bg-primary text-white rounded-xl font-bold hover:opacity-90 shadow-md flex items-center gap-1">
+                <span class="material-symbols-outlined text-sm">print</span> Print / Save Certificate
+            </button>
+        </div>
     </div>
 </div>
 

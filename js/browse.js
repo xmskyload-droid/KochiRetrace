@@ -389,6 +389,38 @@ document.addEventListener('DOMContentLoaded', () => {
             contactDetailsDiv.classList.add('hidden');
         }
 
+        // Run AI Match Assistant Engine
+        const aiMatchContainer = document.getElementById('ai-match-container');
+        if (aiMatchContainer) {
+            const matches = window.Storage.findAIMatches ? window.Storage.findAIMatches(item) : [];
+            if (matches.length > 0) {
+                const topMatch = matches[0];
+                aiMatchContainer.innerHTML = `
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary text-xl">psychology</span>
+                            <div>
+                                <h4 class="text-xs font-extrabold text-primary uppercase tracking-wide">AI Match Assistant (${topMatch.matchScore}% Confidence)</h4>
+                                <p class="text-xs font-bold text-slate-800 dark:text-slate-200 mt-0.5">Potential Match: ${topMatch.item.name} (${topMatch.item.locality})</p>
+                            </div>
+                        </div>
+                        <span class="px-2 py-0.5 bg-primary text-white text-[10px] font-bold rounded-full">${topMatch.matchScore}% Match</span>
+                    </div>
+                    <p class="text-[11px] text-slate-600 dark:text-slate-400">
+                        Matches ${item.status === 'Lost' ? 'found' : 'lost'} listing reported on ${topMatch.item.date}. ${topMatch.matchedKeywords.length > 0 ? `Shared attributes: <strong>${topMatch.matchedKeywords.join(', ')}</strong>.` : ''}
+                    </p>
+                    <div class="pt-1 flex justify-end">
+                        <button onclick="window.location.href='browse.html?itemId=${topMatch.item.id}'" class="px-3 py-1 bg-primary text-white rounded-lg text-[11px] font-bold hover:opacity-90 transition-all flex items-center gap-1">
+                            Compare Listing <span class="material-symbols-outlined text-xs">arrow_forward</span>
+                        </button>
+                    </div>
+                `;
+                aiMatchContainer.classList.remove('hidden');
+            } else {
+                aiMatchContainer.classList.add('hidden');
+            }
+        }
+
         // Show modal
         detailsModal.classList.remove('hidden');
         document.body.classList.add('overflow-hidden');
